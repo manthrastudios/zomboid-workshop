@@ -25,6 +25,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Tevo\ZomboidWorkshop\Services\ModListService;
@@ -213,13 +214,41 @@ class ZomboidWorkshopPage extends Page implements HasTable
     // Tabela
     // ------------------------------------------------------------------
 
+    /** Tags/categorias oficiais da workshop do PZ */
+    protected const PZ_TAGS = [
+        'Animations', 'Balance', 'Building', 'Clothing/Armor', 'Food', 'Framework',
+        'Hardmode', 'Interface', 'Items', 'Language/Translation', 'Literature', 'Map',
+        'Military', 'Misc', 'Models', 'Multiplayer', 'Pop Culture', 'Realistic',
+        'Silly/Fun', 'Textures', 'Traits', 'Vehicles', 'Weapons',
+    ];
+
+    /** Lê o valor de um filtro da tabela (estado do Livewire). */
+    protected function filterValue(string $name): mixed
+    {
+        $state = $this->tableFilters[$name] ?? null;
+
+        return is_array($state) ? ($state['value'] ?? null) : $state;
+    }
+
     public function table(Table $table): Table
     {
         return $table
             ->records(function (?string $search, int $page) {
                 if ($this->activeTab === 'search') {
                     try {
-                        $result = $this->steam()->search($search, $page);
+                        $tags = array_values(array_filter([
+                            $this->filterValue('build'),
+                            $this->filterValue('category'),
+                        ]));
+
+                        $result = $this->steam()->search(
+                            $search,
+                            $page,
+                            20,
+                            $this->filterValue('sort') ?? 'auto',
+                            (int) ($this->filterValue('period') ?? 7),
+                            $tags,
+                        );
 
                         return new LengthAwarePaginator($result['items'], $result['total'], 20, $page);
                     } catch (Exception $exception) {
@@ -253,6 +282,33 @@ class ZomboidWorkshopPage extends Page implements HasTable
                 return new LengthAwarePaginator(array_slice($mods, $offset, 20), count($mods), 20, $page);
             })
             ->paginated([20])
+            ->filters($this->activeTab === 'search' ? [
+                SelectFilter::make('sort')
+                    ->label(static::t('filters.sort'))
+                    ->options([
+                        'trend' => static::t('filters.sort_trend'),
+                        'relevance' => static::t('filters.sort_relevance'),
+                        'newest' => static::t('filters.sort_newest'),
+                        'top' => static::t('filters.sort_top'),
+                    ]),
+                SelectFilter::make('period')
+                    ->label(static::t('filters.period'))
+                    ->options([
+                        '1' => static::t('filters.period_day'),
+                        '7' => static::t('filters.period_week'),
+                        '30' => static::t('filters.period_month'),
+                        '365' => static::t('filters.period_year'),
+                    ]),
+                SelectFilter::make('build')
+                    ->label(static::t('filters.build'))
+                    ->options([
+                        'Build 42' => 'Build 42',
+                        'Build 41' => 'Build 41',
+                    ]),
+                SelectFilter::make('category')
+                    ->label(static::t('filters.category'))
+                    ->options(array_combine(self::PZ_TAGS, self::PZ_TAGS)),
+            ] : [])
             ->columns([
                 ImageColumn::make('preview_url')
                     ->label(''),

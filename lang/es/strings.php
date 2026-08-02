@@ -51,6 +51,21 @@ return [
         'manual_placeholder' => 'escribe y pulsa Enter',
     ],
 
+    'filters' => [
+        'sort' => 'Ordenar por',
+        'sort_trend' => 'Tendencias',
+        'sort_relevance' => 'Relevancia',
+        'sort_newest' => 'Más recientes',
+        'sort_top' => 'Mejor valorados',
+        'period' => 'Período de tendencias',
+        'period_day' => 'Hoy',
+        'period_week' => 'Esta semana',
+        'period_month' => 'Este mes',
+        'period_year' => 'Este año',
+        'build' => 'Build del juego',
+        'category' => 'Categoría',
+    ],
+
     'modals' => [
         'remove_heading' => 'Quitar mod',
         'remove_description' => '¿Quitar ":title" de tu lista? Los archivos siguen descargados; simplemente dejará de cargarse cuando guardes.',

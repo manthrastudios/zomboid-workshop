@@ -51,6 +51,21 @@ return [
         'manual_placeholder' => 'saisissez puis appuyez sur Entrée',
     ],
 
+    'filters' => [
+        'sort' => 'Trier par',
+        'sort_trend' => 'Tendances',
+        'sort_relevance' => 'Pertinence',
+        'sort_newest' => 'Plus récents',
+        'sort_top' => 'Mieux notés',
+        'period' => 'Période des tendances',
+        'period_day' => "Aujourd'hui",
+        'period_week' => 'Cette semaine',
+        'period_month' => 'Ce mois-ci',
+        'period_year' => 'Cette année',
+        'build' => 'Build du jeu',
+        'category' => 'Catégorie',
+    ],
+
     'modals' => [
         'remove_heading' => 'Retirer le mod',
         'remove_description' => 'Retirer « :title » de votre liste ? Les fichiers restent téléchargés ; il ne sera simplement plus chargé après l\'enregistrement.',

@@ -51,6 +51,21 @@ return [
         'manual_placeholder' => 'type and press Enter',
     ],
 
+    'filters' => [
+        'sort' => 'Sort by',
+        'sort_trend' => 'Trending',
+        'sort_relevance' => 'Relevance',
+        'sort_newest' => 'Most recent',
+        'sort_top' => 'Top rated',
+        'period' => 'Trending period',
+        'period_day' => 'Today',
+        'period_week' => 'This week',
+        'period_month' => 'This month',
+        'period_year' => 'This year',
+        'build' => 'Game build',
+        'category' => 'Category',
+    ],
+
     'modals' => [
         'remove_heading' => 'Remove mod',
         'remove_description' => 'Remove ":title" from your list? Its files stay downloaded; it just won\'t load anymore after you save.',

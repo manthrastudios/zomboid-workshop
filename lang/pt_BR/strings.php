@@ -51,6 +51,21 @@ return [
         'manual_placeholder' => 'digite e aperte Enter',
     ],
 
+    'filters' => [
+        'sort' => 'Ordenar por',
+        'sort_trend' => 'Em alta',
+        'sort_relevance' => 'Relevância',
+        'sort_newest' => 'Mais recentes',
+        'sort_top' => 'Mais votados',
+        'period' => 'Período do "em alta"',
+        'period_day' => 'Hoje',
+        'period_week' => 'Esta semana',
+        'period_month' => 'Este mês',
+        'period_year' => 'Este ano',
+        'build' => 'Build do jogo',
+        'category' => 'Categoria',
+    ],
+
     'modals' => [
         'remove_heading' => 'Remover mod',
         'remove_description' => 'Remover ":title" da sua lista? Os arquivos continuam baixados; ele só deixa de carregar depois que você salvar.',

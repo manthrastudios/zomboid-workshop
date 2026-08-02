@@ -51,6 +51,21 @@ return [
         'manual_placeholder' => 'eingeben und Enter drücken',
     ],
 
+    'filters' => [
+        'sort' => 'Sortieren nach',
+        'sort_trend' => 'Im Trend',
+        'sort_relevance' => 'Relevanz',
+        'sort_newest' => 'Neueste',
+        'sort_top' => 'Am besten bewertet',
+        'period' => 'Trend-Zeitraum',
+        'period_day' => 'Heute',
+        'period_week' => 'Diese Woche',
+        'period_month' => 'Diesen Monat',
+        'period_year' => 'Dieses Jahr',
+        'build' => 'Spiel-Build',
+        'category' => 'Kategorie',
+    ],
+
     'modals' => [
         'remove_heading' => 'Mod entfernen',
         'remove_description' => '„:title" aus deiner Liste entfernen? Die Dateien bleiben heruntergeladen; er wird nach dem Speichern nur nicht mehr geladen.',

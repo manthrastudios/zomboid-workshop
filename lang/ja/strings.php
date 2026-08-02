@@ -51,6 +51,21 @@ return [
         'manual_placeholder' => '入力してEnterキーを押す',
     ],
 
+    'filters' => [
+        'sort' => '並び替え',
+        'sort_trend' => 'トレンド',
+        'sort_relevance' => '関連度',
+        'sort_newest' => '新着順',
+        'sort_top' => '高評価順',
+        'period' => 'トレンドの期間',
+        'period_day' => '今日',
+        'period_week' => '今週',
+        'period_month' => '今月',
+        'period_year' => '今年',
+        'build' => 'ゲームビルド',
+        'category' => 'カテゴリ',
+    ],
+
     'modals' => [
         'remove_heading' => 'MODを削除',
         'remove_description' => '「:title」をリストから削除しますか？ファイルはダウンロードされたまま残り、保存後に読み込まれなくなるだけです。',

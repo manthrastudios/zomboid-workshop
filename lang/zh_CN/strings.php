@@ -51,6 +51,21 @@ return [
         'manual_placeholder' => '输入后按回车',
     ],
 
+    'filters' => [
+        'sort' => '排序方式',
+        'sort_trend' => '热门',
+        'sort_relevance' => '相关性',
+        'sort_newest' => '最新',
+        'sort_top' => '好评最多',
+        'period' => '热门时间段',
+        'period_day' => '今天',
+        'period_week' => '本周',
+        'period_month' => '本月',
+        'period_year' => '今年',
+        'build' => '游戏版本',
+        'category' => '分类',
+    ],
+
     'modals' => [
         'remove_heading' => '移除模组',
         'remove_description' => '将“:title”从列表中移除？文件仍保留在服务器上，保存后它只是不再加载。',

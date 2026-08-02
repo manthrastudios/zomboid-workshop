@@ -75,14 +75,26 @@ class SteamWorkshopService
      *
      * @throws Exception
      */
-    public function search(?string $text, int $page = 1, int $perPage = 20): array
+    /**
+     * @param string $sort auto|relevance|trend|newest|top
+     * @param array<int, string> $tags tags exigidas (ex.: ["Build 42", "Weapons"])
+     */
+    public function search(?string $text, int $page = 1, int $perPage = 20, string $sort = 'auto', int $days = 7, array $tags = []): array
     {
         $key = config('zomboid-workshop.steam_api_key');
         if (empty($key)) {
             throw new Exception(trans('zomboid-workshop::strings.notifications.search_needs_key'));
         }
 
-        // 12 = RankedByTextSearch; sem texto, 3 = RankedByTrend (populares da semana)
+        // query_type: 12 = por texto, 3 = em alta (days), 1 = recentes, 0 = mais votados
+        $queryType = match ($sort) {
+            'relevance' => 12,
+            'trend' => 3,
+            'newest' => 1,
+            'top' => 0,
+            default => filled($text) ? 12 : 3,
+        };
+
         $params = [
             'key' => $key,
             'appid' => self::PZ_APP_ID,
@@ -90,12 +102,19 @@ class SteamWorkshopService
             'numperpage' => $perPage,
             'return_previews' => true,
             'return_short_description' => true,
-            'query_type' => filled($text) ? 12 : 3,
-            'days' => 7,
+            'query_type' => $queryType,
+            'days' => $days,
         ];
 
         if (filled($text)) {
             $params['search_text'] = $text;
+        }
+
+        foreach (array_values($tags) as $i => $tag) {
+            $params["requiredtags[$i]"] = $tag;
+        }
+        if (count($tags) > 1) {
+            $params['match_all_tags'] = true;
         }
 
         $response = Http::timeout(15)
