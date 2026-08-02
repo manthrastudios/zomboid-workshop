@@ -1,34 +1,78 @@
-# Zomboid Workshop Mods — plugin para Pelican Panel
+# Zomboid Workshop Mods — Pelican Panel plugin
 
-Gerencie mods da Steam Workshop em servidores **Project Zomboid** direto do painel,
-sem editar `Mods=`/`WorkshopItems=` na mão.
+Manage Steam Workshop mods on **Project Zomboid** servers straight from the panel —
+no more hand-editing `Mods=`/`WorkshopItems=` lines.
 
-## Funcionalidades
+*[Português mais abaixo](#português-brasil)* 🇧🇷
 
-- **Buscar na workshop** dentro do painel (precisa de uma [Steam Web API key](https://steamcommunity.com/dev/apikey) gratuita, configurada em Admin → Plugins)
-- **Adicionar por URL ou ID** da workshop (sem API key)
-- **Importar coleção** da Steam inteira, na ordem da coleção (sem API key)
-- **Importar do ini** atual — popula a lista a partir do que o servidor já usa
-- **Ligar/desligar** cada mod e **reordenar** (ordem de load do PZ)
-- **Detecção de Mod IDs** em duas camadas: descrição da workshop + leitura dos
-  `mod.info` já baixados no volume (inclusive layout B42 com subpastas `42*/common`)
-- **Aplicar**: reescreve `WorkshopItems=` e `Mods=` no ini via wings; botão de
-  restart opcional (mods só valem no boot)
+## Features
 
-A lista fica em `.zomboid-workshop.json` no volume do servidor — viaja com backups
-e sobrevive a reinstalação do painel.
+- **Browse the workshop** inside the panel (weekly trending + text search)
+- **Add by URL or ID**, or **import an entire Steam collection** in order
+- **Import your current setup** — builds the list from the server's existing config
+- **Toggle mods on/off** and **reorder** them (PZ load order)
+- **Two-layer Mod ID detection**: workshop description parsing + reading the
+  actual `mod.info` files already downloaded on the server (handles the
+  Build 42 folder layouts, including multi-mod workshop items)
+- **Save to server** rewrites `Mods=` and `WorkshopItems=` via Wings, with an
+  optional restart button (mods load at boot)
+- Localized in **7 languages**: en, pt_BR, es, fr, de, ja, zh_CN — follows the
+  panel locale
 
-## Instalação
+The mod list is stored as `.zomboid-workshop.json` inside the server's own
+volume, so it travels with backups and survives panel reinstalls.
+
+## Requirements
+
+- Pelican Panel with the plugin system (2026 builds)
+- A Project Zomboid server using an egg whose name contains "zomboid"
+  (or add the `zomboid_workshop` feature to your egg)
+- Optional: a free [Steam Web API key](https://steamcommunity.com/dev/apikey)
+  for in-panel search (set it in Admin → Plugins → Zomboid Workshop Mods).
+  Adding by URL/ID and importing collections work without a key.
+
+## Installation
+
+Recommended: install via the [Pelican Hub](https://hub.pelican.dev/plugins).
+
+Manual:
 
 ```bash
-cp -r zomboid-workshop /var/www/pelican/plugins/   # ou o plugins/ montado do container
+cp -r zomboid-workshop /var/www/pelican/plugins/   # or your mounted plugins dir
 php artisan p:plugin:install zomboid-workshop
 ```
 
-A página "Workshop Mods" aparece em servidores cujo egg tem `zomboid` no nome
-(ou o feature `zomboid_workshop`).
+The "Workshop Mods" page appears in the server panel for matching servers.
 
-## Status
+## How it works
 
-Em desenvolvimento, testado com Pelican `panel:latest` (ago/2026) e o egg
-Project Zomboid do pelican-eggs, Build 42. Strings em pt-BR por enquanto.
+1. Add mods (search, URL/ID, collection, or import your current setup)
+2. Toggle and order them — nothing touches the server yet
+3. **Save to server** writes the config; restart when you're ready
+
+If a workshop item's Mod ID can't be parsed from its description, restart the
+server once (so it downloads) and hit the per-row **rescan** button — the IDs
+are then read from the downloaded `mod.info` files, which is authoritative.
+
+---
+
+## Português (Brasil)
+
+Gerencie mods da Steam Workshop em servidores **Project Zomboid** direto do
+painel — sem editar `Mods=`/`WorkshopItems=` na mão.
+
+- Busca da workshop dentro do painel (populares da semana + busca por texto)
+- Adicionar por URL/ID e importar coleções inteiras da Steam, na ordem
+- Importar a configuração atual do servidor
+- Ligar/desligar e reordenar (ordem de load do PZ)
+- Detecção de Mod IDs em duas camadas (descrição + `mod.info` no disco, com
+  suporte ao layout do Build 42)
+- Salvar no servidor via Wings + botão de reiniciar
+- 7 idiomas, seguindo o idioma do painel
+
+A busca embutida precisa de uma [chave gratuita da Steam Web API](https://steamcommunity.com/dev/apikey)
+(Admin → Plugins → Zomboid Workshop Mods). O resto funciona sem chave.
+
+## License
+
+[MIT](LICENSE)

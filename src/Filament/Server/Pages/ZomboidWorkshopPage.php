@@ -1,6 +1,6 @@
 <?php
 
-namespace Manthra\ZomboidWorkshop\Filament\Server\Pages;
+namespace Tevo\ZomboidWorkshop\Filament\Server\Pages;
 
 use App\Models\Server;
 use App\Repositories\Daemon\DaemonPowerRepository;
@@ -27,8 +27,8 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Manthra\ZomboidWorkshop\Services\ModListService;
-use Manthra\ZomboidWorkshop\Services\SteamWorkshopService;
+use Tevo\ZomboidWorkshop\Services\ModListService;
+use Tevo\ZomboidWorkshop\Services\SteamWorkshopService;
 
 class ZomboidWorkshopPage extends Page implements HasTable
 {

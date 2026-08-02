@@ -1,6 +1,6 @@
 <?php
 
-namespace Manthra\ZomboidWorkshop\Services;
+namespace Tevo\ZomboidWorkshop\Services;
 
 use App\Models\Server;
 use App\Repositories\Daemon\DaemonFileRepository;

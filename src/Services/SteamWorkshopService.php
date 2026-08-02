@@ -1,6 +1,6 @@
 <?php
 
-namespace Manthra\ZomboidWorkshop\Services;
+namespace Tevo\ZomboidWorkshop\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Http;

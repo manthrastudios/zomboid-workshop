@@ -1,12 +1,11 @@
 {
     "id": "zomboid-workshop",
     "name": "Zomboid Workshop Mods",
-    "author": "Manthra Studio",
+    "author": "Tevo",
     "version": "0.1.0",
-    "description": "Gerencie mods da Steam Workshop em servidores Project Zomboid: busca, adicionar por URL/ID, importar coleção, ligar/desligar, ordenar e aplicar no ini.",
+    "description": "Manage Steam Workshop mods on Project Zomboid servers: search, add by URL/ID, import collections, toggle, reorder and apply — no more hand-editing Mods= lines.",
     "category": "plugin",
-    "url": "https://github.com/manthra-studio/zomboid-workshop",
-    "namespace": "Manthra\\ZomboidWorkshop",
+    "namespace": "Tevo\\ZomboidWorkshop",
     "class": "ZomboidWorkshopPlugin",
     "panels": [
         "server"

@@ -1,6 +1,6 @@
 <?php
 
-namespace Manthra\ZomboidWorkshop;
+namespace Tevo\ZomboidWorkshop;
 
 use App\Contracts\Plugins\HasPluginSettings;
 use App\Traits\EnvironmentWriterTrait;
@@ -24,7 +24,7 @@ class ZomboidWorkshopPlugin implements HasPluginSettings, Plugin
 
         $panel->discoverPages(
             plugin_path($this->getId(), "src/Filament/$id/Pages"),
-            "Manthra\\ZomboidWorkshop\\Filament\\$id\\Pages"
+            "Tevo\\ZomboidWorkshop\\Filament\\$id\\Pages"
         );
     }
 
