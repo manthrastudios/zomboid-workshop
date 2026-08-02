@@ -34,13 +34,13 @@ class ZomboidWorkshopPlugin implements HasPluginSettings, Plugin
     {
         return [
             TextInput::make('steam_api_key')
-                ->label('Steam Web API Key')
-                ->helperText('Necessária só para a busca embutida. Crie a sua em steamcommunity.com/dev/apikey.')
+                ->label(trans('zomboid-workshop::strings.settings.api_key'))
+                ->helperText(trans('zomboid-workshop::strings.settings.api_key_help'))
                 ->password()
                 ->revealable()
                 ->default(fn () => config('zomboid-workshop.steam_api_key')),
             TextInput::make('nav_sort')
-                ->label('Posição no menu')
+                ->label(trans('zomboid-workshop::strings.settings.nav_sort'))
                 ->numeric()
                 ->default(fn () => (int) config('zomboid-workshop.nav_sort', 11)),
         ];
@@ -54,7 +54,7 @@ class ZomboidWorkshopPlugin implements HasPluginSettings, Plugin
         ]);
 
         Notification::make()
-            ->title('Configurações salvas')
+            ->title(trans('zomboid-workshop::strings.settings.saved'))
             ->success()
             ->send();
     }

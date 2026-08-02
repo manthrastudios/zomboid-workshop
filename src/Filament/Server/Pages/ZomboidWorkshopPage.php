@@ -43,6 +43,11 @@ class ZomboidWorkshopPage extends Page implements HasTable
     /** @var array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>}|null */
     protected ?array $data = null;
 
+    protected static function t(string $key, array $replace = []): string
+    {
+        return trans('zomboid-workshop::strings.'.$key, $replace);
+    }
+
     public static function getNavigationSort(): ?int
     {
         return (int) config('zomboid-workshop.nav_sort', 11);
@@ -50,12 +55,12 @@ class ZomboidWorkshopPage extends Page implements HasTable
 
     public static function getNavigationLabel(): string
     {
-        return 'Workshop Mods';
+        return static::t('nav_label');
     }
 
     public function getTitle(): string
     {
-        return 'Steam Workshop';
+        return static::t('title');
     }
 
     public static function canAccess(): bool
@@ -87,8 +92,8 @@ class ZomboidWorkshopPage extends Page implements HasTable
     public function getTabs(): array
     {
         return [
-            'mods' => Tab::make('Meus mods'),
-            'search' => Tab::make('Buscar na workshop'),
+            'mods' => Tab::make(static::t('tabs.mods')),
+            'search' => Tab::make(static::t('tabs.search')),
         ];
     }
 
@@ -155,7 +160,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
 
         if ($this->findIndex($workshopId) !== null) {
             if ($notify) {
-                Notification::make()->title('Esse mod já está na lista')->info()->send();
+                Notification::make()->title(static::t('notifications.already_in_list'))->info()->send();
             }
 
             return;
@@ -190,14 +195,14 @@ class ZomboidWorkshopPage extends Page implements HasTable
         if ($notify) {
             if (empty($modIds)) {
                 Notification::make()
-                    ->title('Adicionado, mas sem Mod ID detectado')
-                    ->body('Não achei o Mod ID na descrição. Use "Editar Mod IDs" ou "Verificar no disco" depois do primeiro boot com o mod.')
+                    ->title(static::t('notifications.added_no_ids'))
+                    ->body(static::t('notifications.added_no_ids_body', ['rescan' => static::t('row.rescan')]))
                     ->warning()
                     ->send();
             } else {
                 Notification::make()
-                    ->title('Mod adicionado')
-                    ->body($item['title'].' — Mod IDs: '.implode(', ', $modIds))
+                    ->title(static::t('notifications.added'))
+                    ->body(static::t('notifications.added_body', ['title' => $item['title'], 'ids' => implode(', ', $modIds)]))
                     ->success()
                     ->send();
             }
@@ -219,7 +224,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         return new LengthAwarePaginator($result['items'], $result['total'], 20, $page);
                     } catch (Exception $exception) {
                         Notification::make()
-                            ->title('Busca indisponível')
+                            ->title(static::t('notifications.search_unavailable'))
                             ->body($exception->getMessage())
                             ->danger()
                             ->send();
@@ -252,7 +257,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                 ImageColumn::make('preview_url')
                     ->label(''),
                 TextColumn::make('title')
-                    ->label('Mod')
+                    ->label(static::t('columns.mod'))
                     ->searchable()
                     ->description(function (array $record): string {
                         if ($this->activeTab === 'search') {
@@ -261,15 +266,15 @@ class ZomboidWorkshopPage extends Page implements HasTable
                             return strlen($description) > 120 ? substr($description, 0, 120).'…' : $description;
                         }
 
-                        return 'Workshop '.$record['workshop_id'];
+                        return static::t('columns.workshop', ['id' => $record['workshop_id']]);
                     }),
                 TextColumn::make('selected_mod_ids')
-                    ->label('Mod IDs')
+                    ->label(static::t('columns.mod_ids'))
                     ->badge()
-                    ->placeholder('nenhum detectado')
+                    ->placeholder(static::t('columns.none_detected'))
                     ->visible(fn () => $this->activeTab !== 'search'),
                 IconColumn::make('enabled')
-                    ->label('Ativo')
+                    ->label(static::t('columns.active'))
                     ->boolean()
                     ->visible(fn () => $this->activeTab !== 'search'),
             ])
@@ -277,14 +282,14 @@ class ZomboidWorkshopPage extends Page implements HasTable
             ->recordActions([
                 // --- aba de busca ---
                 Action::make('add')
-                    ->label('Adicionar')
+                    ->label(static::t('row.add'))
                     ->icon('tabler-plus')
                     ->color('success')
                     ->visible(fn () => $this->activeTab === 'search')
                     ->hidden(fn (array $record) => $this->findIndex((string) $record['workshop_id']) !== null)
                     ->action(fn (array $record) => $this->addWorkshopItem($record)),
                 Action::make('already_added')
-                    ->label('Na lista')
+                    ->label(static::t('row.in_list'))
                     ->icon('tabler-check')
                     ->color('success')
                     ->disabled()
@@ -295,7 +300,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     ->iconButton()
                     ->icon(fn (array $record) => empty($record['enabled']) ? 'tabler-toggle-left' : 'tabler-toggle-right')
                     ->color(fn (array $record) => empty($record['enabled']) ? 'gray' : 'success')
-                    ->tooltip(fn (array $record) => empty($record['enabled']) ? 'Ligar' : 'Desligar')
+                    ->tooltip(fn (array $record) => empty($record['enabled']) ? static::t('row.enable') : static::t('row.disable'))
                     ->visible(fn () => $this->activeTab !== 'search')
                     ->action(function (array $record) {
                         $data = $this->getData();
@@ -310,30 +315,30 @@ class ZomboidWorkshopPage extends Page implements HasTable
                 Action::make('move_up')
                     ->iconButton()
                     ->icon('tabler-arrow-up')
-                    ->tooltip('Subir (carrega antes)')
+                    ->tooltip(static::t('row.move_up'))
                     ->visible(fn () => $this->activeTab !== 'search')
                     ->disabled(fn (array $record) => ($record['position'] ?? 0) === 0)
                     ->action(fn (array $record) => $this->move((string) $record['workshop_id'], -1)),
                 Action::make('move_down')
                     ->iconButton()
                     ->icon('tabler-arrow-down')
-                    ->tooltip('Descer (carrega depois)')
+                    ->tooltip(static::t('row.move_down'))
                     ->visible(fn () => $this->activeTab !== 'search')
                     ->disabled(fn (array $record) => ($record['position'] ?? 0) >= count($this->getData()['mods']) - 1)
                     ->action(fn (array $record) => $this->move((string) $record['workshop_id'], 1)),
                 Action::make('edit_mod_ids')
                     ->iconButton()
                     ->icon('tabler-edit')
-                    ->tooltip('Editar Mod IDs')
+                    ->tooltip(static::t('row.edit_ids'))
                     ->visible(fn () => $this->activeTab !== 'search')
                     ->schema(fn (array $record) => [
                         CheckboxList::make('selected')
-                            ->label('Mod IDs detectados (marque os que entram no Mods=)')
+                            ->label(static::t('forms.selected_label'))
                             ->options(array_combine($record['mod_ids'] ?? [], $record['mod_ids'] ?? []))
                             ->default($record['selected_mod_ids'] ?? []),
                         TagsInput::make('manual')
-                            ->label('Adicionar Mod IDs manualmente')
-                            ->placeholder('digite e aperte Enter'),
+                            ->label(static::t('forms.manual_label'))
+                            ->placeholder(static::t('forms.manual_placeholder')),
                     ])
                     ->action(function (array $data, array $record) {
                         $listData = $this->getData();
@@ -349,12 +354,12 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $listData['mods'][$index]['selected_mod_ids'] = $selected;
                         $this->saveData($listData);
 
-                        Notification::make()->title('Mod IDs atualizados')->success()->send();
+                        Notification::make()->title(static::t('notifications.ids_updated'))->success()->send();
                     }),
                 Action::make('rescan')
                     ->iconButton()
                     ->icon('tabler-refresh')
-                    ->tooltip('Verificar Mod IDs no disco (precisa do mod já baixado)')
+                    ->tooltip(static::t('row.rescan'))
                     ->visible(fn () => $this->activeTab !== 'search')
                     ->action(function (array $record) {
                         /** @var Server $server */
@@ -364,8 +369,8 @@ class ZomboidWorkshopPage extends Page implements HasTable
 
                         if (empty($diskIds)) {
                             Notification::make()
-                                ->title('Nada encontrado no disco')
-                                ->body('O mod ainda não foi baixado pelo servidor (roda um restart primeiro).')
+                                ->title(static::t('notifications.rescan_empty'))
+                                ->body(static::t('notifications.rescan_empty_body'))
                                 ->warning()
                                 ->send();
 
@@ -385,7 +390,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $this->saveData($data);
 
                         Notification::make()
-                            ->title('Mod IDs do disco: '.implode(', ', $diskIds))
+                            ->title(static::t('notifications.rescan_found', ['ids' => implode(', ', $diskIds)]))
                             ->success()
                             ->send();
                     }),
@@ -393,11 +398,11 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     ->iconButton()
                     ->icon('tabler-trash')
                     ->color('danger')
-                    ->tooltip('Remover da lista')
+                    ->tooltip(static::t('row.remove'))
                     ->visible(fn () => $this->activeTab !== 'search')
                     ->requiresConfirmation()
-                    ->modalHeading('Remover mod')
-                    ->modalDescription(fn (array $record) => 'Remover "'.$record['title'].'" da lista? (o download fica no disco; só sai do ini na próxima aplicação)')
+                    ->modalHeading(static::t('modals.remove_heading'))
+                    ->modalDescription(fn (array $record) => static::t('modals.remove_description', ['title' => $record['title']]))
                     ->action(function (array $record) {
                         $data = $this->getData();
                         $index = $this->findIndex((string) $record['workshop_id']);
@@ -407,7 +412,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
 
                         unset($data['mods'][$index]);
                         $this->saveData($data);
-                        Notification::make()->title('Removido da lista')->success()->send();
+                        Notification::make()->title(static::t('notifications.removed'))->success()->send();
                     }),
             ]);
     }
@@ -434,11 +439,11 @@ class ZomboidWorkshopPage extends Page implements HasTable
     {
         return [
             Action::make('add_by_url')
-                ->label('Adicionar por URL/ID')
+                ->label(static::t('actions.add_by_url'))
                 ->icon('tabler-link-plus')
                 ->schema([
                     TextInput::make('input')
-                        ->label('URL ou ID da workshop')
+                        ->label(static::t('forms.url_label'))
                         ->placeholder('https://steamcommunity.com/sharedfiles/filedetails/?id=2875848298')
                         ->required(),
                 ])
@@ -446,7 +451,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     $workshopId = SteamWorkshopService::parseWorkshopId($data['input']);
 
                     if (!$workshopId) {
-                        Notification::make()->title('URL/ID inválido')->danger()->send();
+                        Notification::make()->title(static::t('notifications.invalid_url'))->danger()->send();
 
                         return;
                     }
@@ -455,22 +460,26 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $this->addWorkshopItem(['workshop_id' => $workshopId]);
                     } catch (Exception $exception) {
                         report($exception);
-                        Notification::make()->title('Falha ao consultar a Steam')->body($exception->getMessage())->danger()->send();
+                        Notification::make()
+                            ->title(static::t('notifications.steam_error'))
+                            ->body(static::t('notifications.steam_error_body'))
+                            ->danger()
+                            ->send();
                     }
                 }),
             Action::make('import_collection')
-                ->label('Importar coleção')
+                ->label(static::t('actions.import_collection'))
                 ->icon('tabler-stack-2')
                 ->schema([
                     TextInput::make('input')
-                        ->label('URL ou ID da coleção')
+                        ->label(static::t('forms.collection_label'))
                         ->required(),
                 ])
                 ->action(function (array $data) {
                     $collectionId = SteamWorkshopService::parseWorkshopId($data['input']);
 
                     if (!$collectionId) {
-                        Notification::make()->title('URL/ID inválido')->danger()->send();
+                        Notification::make()->title(static::t('notifications.invalid_url'))->danger()->send();
 
                         return;
                     }
@@ -479,7 +488,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $children = $this->steam()->getCollectionChildren($collectionId);
 
                         if (empty($children)) {
-                            Notification::make()->title('Coleção vazia ou não encontrada')->warning()->send();
+                            Notification::make()->title(static::t('notifications.collection_empty'))->warning()->send();
 
                             return;
                         }
@@ -497,20 +506,24 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         }
 
                         Notification::make()
-                            ->title("Coleção importada: $added mods adicionados")
+                            ->title(static::t('notifications.collection_imported', ['count' => $added]))
                             ->success()
                             ->send();
                     } catch (Exception $exception) {
                         report($exception);
-                        Notification::make()->title('Falha ao importar coleção')->body($exception->getMessage())->danger()->send();
+                        Notification::make()
+                            ->title(static::t('notifications.steam_error'))
+                            ->body(static::t('notifications.steam_error_body'))
+                            ->danger()
+                            ->send();
                     }
                 }),
             Action::make('import_ini')
-                ->label('Importar do ini')
+                ->label(static::t('actions.import_ini'))
                 ->icon('tabler-file-import')
                 ->requiresConfirmation()
-                ->modalHeading('Importar do ini atual')
-                ->modalDescription('Lê as linhas WorkshopItems= e Mods= do ini do servidor e monta a lista a partir delas. Itens já na lista são mantidos.')
+                ->modalHeading(static::t('modals.import_ini_heading'))
+                ->modalDescription(static::t('modals.import_ini_description'))
                 ->action(function () {
                     /** @var Server $server */
                     $server = Filament::getTenant();
@@ -519,7 +532,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $ini = $this->modList()->readIni($server);
 
                         if (empty($ini['workshop_ids'])) {
-                            Notification::make()->title('O ini não tem WorkshopItems=')->warning()->send();
+                            Notification::make()->title(static::t('notifications.ini_no_items'))->warning()->send();
 
                             return;
                         }
@@ -563,28 +576,31 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $data['extra_mod_ids'] = array_values(array_unique(array_merge($data['extra_mod_ids'], $extras)));
                         $this->saveData($data);
 
-                        $extraNote = empty($extras) ? '' : ' ('.count($extras).' Mod IDs sem dono foram preservados)';
+                        $extraNote = empty($extras) ? '' : static::t('notifications.ini_imported_extras', ['count' => count($extras)]);
                         Notification::make()
-                            ->title('Importados '.count($ini['workshop_ids']).' itens do ini'.$extraNote)
+                            ->title(static::t('notifications.ini_imported', ['count' => count($ini['workshop_ids'])]).$extraNote)
                             ->success()
                             ->send();
                     } catch (Exception $exception) {
                         report($exception);
-                        Notification::make()->title('Falha ao importar do ini')->body($exception->getMessage())->danger()->send();
+                        Notification::make()
+                            ->title(static::t('notifications.steam_error'))
+                            ->body(static::t('notifications.steam_error_body'))
+                            ->danger()
+                            ->send();
                     }
                 }),
             Action::make('apply')
-                ->label('Aplicar no servidor')
+                ->label(static::t('actions.apply'))
                 ->icon('tabler-device-floppy')
                 ->color('warning')
                 ->requiresConfirmation()
-                ->modalHeading('Aplicar lista no ini')
+                ->modalHeading(static::t('modals.apply_heading'))
                 ->modalDescription(function () {
                     $data = $this->getData();
                     $enabled = count(array_filter($data['mods'], fn ($entry) => !empty($entry['enabled'])));
-                    $total = count($data['mods']);
 
-                    return "Reescreve WorkshopItems= e Mods= no ini do servidor com os $enabled mods ativos (de $total na lista). As mudanças valem no próximo restart.";
+                    return static::t('modals.apply_description', ['enabled' => $enabled, 'total' => count($data['mods'])]);
                 })
                 ->action(function () {
                     /** @var Server $server */
@@ -594,33 +610,44 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $result = $this->modList()->applyToIni($server, $this->getData());
 
                         Notification::make()
-                            ->title('Aplicado no ini')
-                            ->body(count($result['workshop_ids']).' workshop items, '.count($result['mod_ids']).' mod IDs. Reinicie o servidor para valer.')
+                            ->title(static::t('notifications.applied'))
+                            ->body(static::t('notifications.applied_body', [
+                                'workshop' => count($result['workshop_ids']),
+                                'ids' => count($result['mod_ids']),
+                            ]))
                             ->success()
                             ->persistent()
                             ->send();
                     } catch (Exception $exception) {
                         report($exception);
-                        Notification::make()->title('Falha ao aplicar')->body($exception->getMessage())->danger()->send();
+                        Notification::make()
+                            ->title(static::t('notifications.apply_failed'))
+                            ->body($exception->getMessage())
+                            ->danger()
+                            ->send();
                     }
                 }),
             Action::make('restart')
-                ->label('Reiniciar servidor')
+                ->label(static::t('actions.restart'))
                 ->icon('tabler-refresh-alert')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->modalHeading('Reiniciar o servidor')
-                ->modalDescription('Derruba quem estiver jogando. O boot com mods leva uns 2-4 minutos.')
+                ->modalHeading(static::t('modals.restart_heading'))
+                ->modalDescription(static::t('modals.restart_description'))
                 ->action(function (DaemonPowerRepository $powerRepository) {
                     /** @var Server $server */
                     $server = Filament::getTenant();
 
                     try {
                         $powerRepository->setServer($server)->send('restart');
-                        Notification::make()->title('Restart enviado')->success()->send();
+                        Notification::make()->title(static::t('notifications.restart_sent'))->success()->send();
                     } catch (Exception $exception) {
                         report($exception);
-                        Notification::make()->title('Falha ao reiniciar')->body($exception->getMessage())->danger()->send();
+                        Notification::make()
+                            ->title(static::t('notifications.restart_failed'))
+                            ->body($exception->getMessage())
+                            ->danger()
+                            ->send();
                     }
                 }),
         ];
@@ -637,18 +664,18 @@ class ZomboidWorkshopPage extends Page implements HasTable
                 Grid::make(3)
                     ->schema([
                         TextEntry::make('total')
-                            ->label('Na lista')
+                            ->label(static::t('badges.total'))
                             ->state(fn () => count($this->getData()['mods']))
                             ->badge()
                             ->size(TextSize::Large),
                         TextEntry::make('ativos')
-                            ->label('Ativos')
+                            ->label(static::t('badges.active'))
                             ->state(fn () => count(array_filter($this->getData()['mods'], fn ($entry) => !empty($entry['enabled']))))
                             ->badge()
                             ->color('success')
                             ->size(TextSize::Large),
                         TextEntry::make('extras')
-                            ->label('Mod IDs avulsos')
+                            ->label(static::t('badges.loose'))
                             ->state(fn () => count($this->getData()['extra_mod_ids']))
                             ->badge()
                             ->color('gray')

@@ -1,0 +1,99 @@
+<?php
+
+return [
+    'nav_label' => 'ワークショップMOD',
+    'title' => 'Steamワークショップ',
+
+    'tabs' => [
+        'mods' => 'マイMOD',
+        'search' => 'ワークショップを探す',
+    ],
+
+    'badges' => [
+        'total' => 'リスト内',
+        'active' => '有効',
+        'loose' => '未対応のMod ID',
+    ],
+
+    'columns' => [
+        'mod' => 'MOD',
+        'mod_ids' => 'Mod ID',
+        'active' => '有効',
+        'none_detected' => 'まだ検出されていません',
+        'workshop' => 'ワークショップ :id',
+    ],
+
+    'row' => [
+        'enable' => '有効にする',
+        'disable' => '無効にする',
+        'move_up' => '上へ（先に読み込み）',
+        'move_down' => '下へ（後に読み込み）',
+        'edit_ids' => 'Mod IDを編集',
+        'rescan' => 'ダウンロード済みファイルからMod IDを検出',
+        'remove' => 'リストから削除',
+        'add' => '追加',
+        'in_list' => 'リストにあります',
+    ],
+
+    'actions' => [
+        'add_by_url' => 'URL/IDで追加',
+        'import_collection' => 'コレクションをインポート',
+        'import_ini' => '現在の設定をインポート',
+        'apply' => 'サーバーに保存',
+        'restart' => 'サーバーを再起動',
+    ],
+
+    'forms' => [
+        'url_label' => 'ワークショップのURLまたはID',
+        'collection_label' => 'コレクションのURLまたはID',
+        'selected_label' => '検出されたMod ID（チェックしたものが読み込まれます）',
+        'manual_label' => 'Mod IDを手動で追加',
+        'manual_placeholder' => '入力してEnterキーを押す',
+    ],
+
+    'modals' => [
+        'remove_heading' => 'MODを削除',
+        'remove_description' => '「:title」をリストから削除しますか？ファイルはダウンロードされたまま残り、保存後に読み込まれなくなるだけです。',
+        'import_ini_heading' => '現在の設定をインポート',
+        'import_ini_description' => 'サーバーがすでに使用しているMODを読み取り、リストを作成します。リストにあるものは保持されます。',
+        'apply_heading' => 'MODリストをサーバーに保存しますか？',
+        'apply_description' => '有効な:enabled個のMOD（リスト内:total個中）がサーバー設定に書き込まれます。変更は次回の再起動時に反映されます。',
+        'restart_heading' => 'サーバーを再起動しますか？',
+        'restart_description' => 'プレイ中のプレイヤーは切断されます。MODありのサーバーは復帰まで数分かかります。',
+    ],
+
+    'notifications' => [
+        'already_in_list' => 'このMODはすでにリストにあります',
+        'added' => 'MODを追加しました',
+        'added_body' => ':title — Mod ID: :ids',
+        'added_no_ids' => '追加しましたが、Mod IDはまだ検出されていません',
+        'added_no_ids_body' => 'Mod IDを自動で特定できませんでした。次回のサーバー再起動後に「:rescan」を使うと、ダウンロード済みファイルから検出されます。',
+        'invalid_url' => 'ワークショップのURLまたはIDではないようです',
+        'steam_error' => 'Steamに接続できませんでした',
+        'steam_error_body' => 'Steamが応答しませんでした。少し待ってからもう一度お試しください。',
+        'collection_empty' => 'コレクションが空か、見つかりません',
+        'collection_imported' => 'コレクションをインポート: :count個のMODを追加しました',
+        'ini_no_items' => 'サーバーにはまだワークショップMODが設定されていません',
+        'ini_imported' => 'サーバー設定から:count個のMODをインポートしました',
+        'ini_imported_extras' => '（対応するアイテムのない:count個のMod IDも保持されました）',
+        'ids_updated' => 'Mod IDを更新しました',
+        'rescan_empty' => 'ディスク上にはまだ何も見つかりません',
+        'rescan_empty_body' => 'サーバーはまだこのMODをダウンロードしていません。一度再起動してから再試行してください。',
+        'rescan_found' => '見つかったMod ID: :ids',
+        'removed' => 'リストから削除しました',
+        'applied' => 'MODリストを保存しました！',
+        'applied_body' => ':workshop個のMOD、:ids個のMod IDを設定しました。反映したいときにサーバーを再起動してください。',
+        'apply_failed' => 'リストを保存できませんでした',
+        'search_unavailable' => '検索は利用できません',
+        'search_needs_key' => 'パネル内検索にはSteam APIキーが必要です。管理者が Admin → Plugins → Zomboid Workshop Mods で設定できます。',
+        'restart_sent' => '再起動中… サーバーは数分で戻ります',
+        'restart_failed' => 'サーバーを再起動できませんでした',
+    ],
+
+    'settings' => [
+        'api_key' => 'Steam Web APIキー',
+        'api_key_help' => 'パネル内検索にのみ必要です。steamcommunity.com/dev/apikey で取得できます。',
+        'nav_sort' => 'メニューの位置',
+        'saved' => '設定を保存しました',
+    ],
+];

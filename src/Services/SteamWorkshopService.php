@@ -79,7 +79,7 @@ class SteamWorkshopService
     {
         $key = config('zomboid-workshop.steam_api_key');
         if (empty($key)) {
-            throw new Exception('Steam Web API key não configurada (Admin → Plugins → Zomboid Workshop Mods).');
+            throw new Exception(trans('zomboid-workshop::strings.notifications.search_needs_key'));
         }
 
         // 12 = RankedByTextSearch; sem texto, 3 = RankedByTrend (populares da semana)
