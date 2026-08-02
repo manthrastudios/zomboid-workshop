@@ -92,6 +92,7 @@ return [
         'ini_no_items' => '你的服务器尚未配置创意工坊模组',
         'ini_imported' => '已从服务器配置导入:count个模组',
         'ini_imported_extras' => '（另有:count个无对应条目的Mod ID也已保留）',
+        'ini_imported_disabled' => ' — :count mod(s) switched off (not on the server)',
         'ids_updated' => 'Mod ID已更新',
         'rescan_empty' => '磁盘上尚未找到任何内容',
         'rescan_empty_body' => '服务器还没有下载该模组——重启一次后再试。',

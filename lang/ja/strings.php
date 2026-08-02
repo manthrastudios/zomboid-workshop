@@ -92,6 +92,7 @@ return [
         'ini_no_items' => 'サーバーにはまだワークショップMODが設定されていません',
         'ini_imported' => 'サーバー設定から:count個のMODをインポートしました',
         'ini_imported_extras' => '（対応するアイテムのない:count個のMod IDも保持されました）',
+        'ini_imported_disabled' => ' — :count mod(s) switched off (not on the server)',
         'ids_updated' => 'Mod IDを更新しました',
         'rescan_empty' => 'ディスク上にはまだ何も見つかりません',
         'rescan_empty_body' => 'サーバーはまだこのMODをダウンロードしていません。一度再起動してから再試行してください。',

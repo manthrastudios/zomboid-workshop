@@ -3,7 +3,7 @@
 namespace Tevo\ZomboidWorkshop\Filament\Server\Pages;
 
 use App\Models\Server;
-use App\Repositories\Daemon\DaemonPowerRepository;
+use App\Repositories\Daemon\DaemonServerRepository;
 use App\Traits\Filament\BlockAccessInConflict;
 use Exception;
 use Filament\Actions\Action;
@@ -66,8 +66,12 @@ class ZomboidWorkshopPage extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        /** @var Server $server */
         $server = Filament::getTenant();
+
+        // o tenant pode vir nulo em alguns ciclos de hidratação do Livewire
+        if (!$server instanceof Server) {
+            return false;
+        }
 
         return parent::canAccess() && static::isZomboidServer($server);
     }
@@ -620,44 +624,67 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         $iniModIdsLower = array_map('strtolower', $ini['mod_ids']);
                         $claimed = [];
 
+                        // Reconcilia com o ini em vez de só acrescentar: o ini é a
+                        // fonte da verdade (pode ter sido editado por fora).
+                        $existing = [];
+                        foreach ($this->getData()['mods'] as $entry) {
+                            $existing[(string) $entry['workshop_id']] = $entry;
+                        }
+
+                        $mods = [];
                         foreach ($ini['workshop_ids'] as $workshopId) {
-                            if ($this->findIndex($workshopId) !== null) {
-                                continue;
+                            $entry = $existing[$workshopId] ?? null;
+                            unset($existing[$workshopId]);
+
+                            if ($entry === null) {
+                                $item = $details[$workshopId] ?? ['workshop_id' => $workshopId, 'title' => "Item $workshopId"];
+
+                                $detected = SteamWorkshopService::extractModIds($item['description'] ?? '');
+                                $diskIds = $this->modList()->scanModIdsOnDisk($server, $workshopId);
+
+                                $entry = [
+                                    'workshop_id' => $workshopId,
+                                    'title' => $item['title'] ?? "Item $workshopId",
+                                    'preview_url' => $item['preview_url'] ?? null,
+                                    'mod_ids' => array_values(array_unique(array_merge($diskIds, $detected))),
+                                ];
                             }
 
-                            $item = $details[$workshopId] ?? ['workshop_id' => $workshopId, 'title' => "Item $workshopId"];
-
-                            $detected = SteamWorkshopService::extractModIds($item['description'] ?? '');
-                            $diskIds = $this->modList()->scanModIdsOnDisk($server, $workshopId);
-                            $known = array_values(array_unique(array_merge($diskIds, $detected)));
-
-                            // seleciona só os que estão de fato no Mods= atual
+                            // marca só os Mod IDs que realmente estão no Mods= de hoje
+                            $known = $entry['mod_ids'] ?? [];
                             $selected = array_values(array_filter($known, fn ($id) => in_array(strtolower($id), $iniModIdsLower)));
                             foreach ($selected as $id) {
                                 $claimed[strtolower($id)] = true;
                             }
 
-                            $data = $this->getData();
-                            $data['mods'][] = [
-                                'workshop_id' => $workshopId,
-                                'title' => $item['title'] ?? "Item $workshopId",
-                                'preview_url' => $item['preview_url'] ?? null,
-                                'mod_ids' => $known,
-                                'selected_mod_ids' => $selected,
-                                'enabled' => true,
-                            ];
-                            $this->data = $data;
+                            $entry['selected_mod_ids'] = $selected;
+                            $entry['enabled'] = true;
+                            $mods[] = $entry;
                         }
 
-                        // Mod IDs do ini que não casaram com nenhum item ficam preservados
-                        $data = $this->getData();
-                        $extras = array_values(array_filter($ini['mod_ids'], fn ($id) => !isset($claimed[strtolower($id)])));
-                        $data['extra_mod_ids'] = array_values(array_unique(array_merge($data['extra_mod_ids'], $extras)));
-                        $this->saveData($data);
+                        // o que está na lista mas não no ini vira desligado (sem
+                        // perder os metadados, pra poder religar depois)
+                        $disabled = 0;
+                        foreach ($existing as $entry) {
+                            if (!empty($entry['enabled'])) {
+                                $disabled++;
+                            }
+                            $entry['enabled'] = false;
+                            $mods[] = $entry;
+                        }
+
+                        // Mod IDs do ini sem dono continuam preservados
+                        $extras = array_values(array_unique(array_filter(
+                            $ini['mod_ids'],
+                            fn ($id) => !isset($claimed[strtolower($id)])
+                        )));
+
+                        $this->saveData(['mods' => $mods, 'extra_mod_ids' => $extras]);
 
                         $extraNote = empty($extras) ? '' : static::t('notifications.ini_imported_extras', ['count' => count($extras)]);
+                        $offNote = $disabled === 0 ? '' : static::t('notifications.ini_imported_disabled', ['count' => $disabled]);
                         Notification::make()
-                            ->title(static::t('notifications.ini_imported', ['count' => count($ini['workshop_ids'])]).$extraNote)
+                            ->title(static::t('notifications.ini_imported', ['count' => count($ini['workshop_ids'])]).$extraNote.$offNote)
                             ->success()
                             ->send();
                     } catch (Exception $exception) {
@@ -713,12 +740,12 @@ class ZomboidWorkshopPage extends Page implements HasTable
                 ->requiresConfirmation()
                 ->modalHeading(static::t('modals.restart_heading'))
                 ->modalDescription(static::t('modals.restart_description'))
-                ->action(function (DaemonPowerRepository $powerRepository) {
+                ->action(function (DaemonServerRepository $serverRepository) {
                     /** @var Server $server */
                     $server = Filament::getTenant();
 
                     try {
-                        $powerRepository->setServer($server)->send('restart');
+                        $serverRepository->setServer($server)->power('restart');
                         Notification::make()->title(static::t('notifications.restart_sent'))->success()->send();
                     } catch (Exception $exception) {
                         report($exception);

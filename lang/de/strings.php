@@ -92,6 +92,7 @@ return [
         'ini_no_items' => 'Dein Server hat noch keine Workshop-Mods konfiguriert',
         'ini_imported' => ':count Mods aus der Serverkonfiguration importiert',
         'ini_imported_extras' => ' (:count Mod-IDs ohne passendes Element wurden ebenfalls erhalten)',
+        'ini_imported_disabled' => ' — :count mod(s) switched off (not on the server)',
         'ids_updated' => 'Mod-IDs aktualisiert',
         'rescan_empty' => 'Noch nichts auf der Festplatte gefunden',
         'rescan_empty_body' => 'Der Server hat diesen Mod noch nicht heruntergeladen — starte ihn einmal neu und versuch es dann erneut.',

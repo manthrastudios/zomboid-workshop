@@ -92,6 +92,7 @@ return [
         'ini_no_items' => 'Seu servidor ainda não tem mods da workshop configurados',
         'ini_imported' => 'Importados :count mods da configuração do servidor',
         'ini_imported_extras' => ' (:count Mod IDs sem item correspondente também foram preservados)',
+        'ini_imported_disabled' => ' — :count mod(s) que não estão no servidor foram desligados na lista',
         'ids_updated' => 'Mod IDs atualizados',
         'rescan_empty' => 'Nada encontrado no disco ainda',
         'rescan_empty_body' => 'O servidor ainda não baixou esse mod — reinicia ele uma vez e tenta de novo.',
