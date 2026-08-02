@@ -52,6 +52,7 @@ return [
     ],
 
     'filters' => [
+        'button' => 'Filters',
         'sort' => 'Sort by',
         'sort_trend' => 'Trending',
         'sort_relevance' => 'Relevance',

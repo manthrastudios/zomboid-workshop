@@ -52,6 +52,7 @@ return [
     ],
 
     'filters' => [
+        'button' => '筛选',
         'sort' => '排序方式',
         'sort_trend' => '热门',
         'sort_relevance' => '相关性',

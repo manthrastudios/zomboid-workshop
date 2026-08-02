@@ -23,9 +23,9 @@ use Filament\Support\Enums\TextSize;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Tevo\ZomboidWorkshop\Services\ModListService;
@@ -222,13 +222,13 @@ class ZomboidWorkshopPage extends Page implements HasTable
         'Silly/Fun', 'Textures', 'Traits', 'Vehicles', 'Weapons',
     ];
 
-    /** Lê o valor de um filtro da tabela (estado do Livewire). */
-    protected function filterValue(string $name): mixed
-    {
-        $state = $this->tableFilters[$name] ?? null;
+    public ?string $searchSort = null;
 
-        return is_array($state) ? ($state['value'] ?? null) : $state;
-    }
+    public ?string $searchPeriod = null;
+
+    public ?string $searchBuild = null;
+
+    public ?string $searchCategory = null;
 
     public function table(Table $table): Table
     {
@@ -236,17 +236,14 @@ class ZomboidWorkshopPage extends Page implements HasTable
             ->records(function (?string $search, int $page) {
                 if ($this->activeTab === 'search') {
                     try {
-                        $tags = array_values(array_filter([
-                            $this->filterValue('build'),
-                            $this->filterValue('category'),
-                        ]));
+                        $tags = array_values(array_filter([$this->searchBuild, $this->searchCategory]));
 
                         $result = $this->steam()->search(
                             $search,
                             $page,
                             20,
-                            $this->filterValue('sort') ?? 'auto',
-                            (int) ($this->filterValue('period') ?? 7),
+                            $this->searchSort ?? 'auto',
+                            (int) ($this->searchPeriod ?? 7),
                             $tags,
                         );
 
@@ -282,33 +279,6 @@ class ZomboidWorkshopPage extends Page implements HasTable
                 return new LengthAwarePaginator(array_slice($mods, $offset, 20), count($mods), 20, $page);
             })
             ->paginated([20])
-            ->filters($this->activeTab === 'search' ? [
-                SelectFilter::make('sort')
-                    ->label(static::t('filters.sort'))
-                    ->options([
-                        'trend' => static::t('filters.sort_trend'),
-                        'relevance' => static::t('filters.sort_relevance'),
-                        'newest' => static::t('filters.sort_newest'),
-                        'top' => static::t('filters.sort_top'),
-                    ]),
-                SelectFilter::make('period')
-                    ->label(static::t('filters.period'))
-                    ->options([
-                        '1' => static::t('filters.period_day'),
-                        '7' => static::t('filters.period_week'),
-                        '30' => static::t('filters.period_month'),
-                        '365' => static::t('filters.period_year'),
-                    ]),
-                SelectFilter::make('build')
-                    ->label(static::t('filters.build'))
-                    ->options([
-                        'Build 42' => 'Build 42',
-                        'Build 41' => 'Build 41',
-                    ]),
-                SelectFilter::make('category')
-                    ->label(static::t('filters.category'))
-                    ->options(array_combine(self::PZ_TAGS, self::PZ_TAGS)),
-            ] : [])
             ->columns([
                 ImageColumn::make('preview_url')
                     ->label(''),
@@ -494,6 +464,59 @@ class ZomboidWorkshopPage extends Page implements HasTable
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('search_filters')
+                ->label(static::t('filters.button'))
+                ->icon('tabler-filter')
+                ->badge(fn () => count(array_filter([$this->searchSort, $this->searchPeriod, $this->searchBuild, $this->searchCategory])) ?: null)
+                ->visible(fn () => $this->activeTab === 'search')
+                ->schema([
+                    Select::make('sort')
+                        ->label(static::t('filters.sort'))
+                        ->options([
+                            'trend' => static::t('filters.sort_trend'),
+                            'relevance' => static::t('filters.sort_relevance'),
+                            'newest' => static::t('filters.sort_newest'),
+                            'top' => static::t('filters.sort_top'),
+                        ])
+                        ->placeholder('—'),
+                    Select::make('period')
+                        ->label(static::t('filters.period'))
+                        ->options([
+                            '1' => static::t('filters.period_day'),
+                            '7' => static::t('filters.period_week'),
+                            '30' => static::t('filters.period_month'),
+                            '365' => static::t('filters.period_year'),
+                        ])
+                        ->placeholder('—'),
+                    Select::make('build')
+                        ->label(static::t('filters.build'))
+                        ->options([
+                            'Build 42' => 'Build 42',
+                            'Build 41' => 'Build 41',
+                        ])
+                        ->placeholder('—'),
+                    Select::make('category')
+                        ->label(static::t('filters.category'))
+                        ->options(array_combine(self::PZ_TAGS, self::PZ_TAGS))
+                        ->searchable()
+                        ->placeholder('—'),
+                ])
+                ->fillForm(fn () => [
+                    'sort' => $this->searchSort,
+                    'period' => $this->searchPeriod,
+                    'build' => $this->searchBuild,
+                    'category' => $this->searchCategory,
+                ])
+                ->action(function (array $data) {
+                    $this->searchSort = $data['sort'] ?? null;
+                    $this->searchPeriod = $data['period'] ?? null;
+                    $this->searchBuild = $data['build'] ?? null;
+                    $this->searchCategory = $data['category'] ?? null;
+                    if (method_exists($this, 'resetPage')) {
+                        $this->resetPage();
+                    }
+                    $this->js('$wire.$refresh()');
+                }),
             Action::make('add_by_url')
                 ->label(static::t('actions.add_by_url'))
                 ->icon('tabler-link-plus')

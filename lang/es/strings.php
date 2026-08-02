@@ -52,6 +52,7 @@ return [
     ],
 
     'filters' => [
+        'button' => 'Filtros',
         'sort' => 'Ordenar por',
         'sort_trend' => 'Tendencias',
         'sort_relevance' => 'Relevancia',

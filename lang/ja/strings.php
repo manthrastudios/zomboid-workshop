@@ -52,6 +52,7 @@ return [
     ],
 
     'filters' => [
+        'button' => 'フィルター',
         'sort' => '並び替え',
         'sort_trend' => 'トレンド',
         'sort_relevance' => '関連度',
