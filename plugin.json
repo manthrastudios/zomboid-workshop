@@ -1,0 +1,16 @@
+{
+    "id": "zomboid-workshop",
+    "name": "Zomboid Workshop Mods",
+    "author": "Manthra Studio",
+    "version": "0.1.0",
+    "description": "Gerencie mods da Steam Workshop em servidores Project Zomboid: busca, adicionar por URL/ID, importar coleção, ligar/desligar, ordenar e aplicar no ini.",
+    "category": "plugin",
+    "url": "https://github.com/manthra-studio/zomboid-workshop",
+    "namespace": "Manthra\\ZomboidWorkshop",
+    "class": "ZomboidWorkshopPlugin",
+    "panels": [
+        "server"
+    ],
+    "panel_version": null,
+    "composer_packages": null
+}
