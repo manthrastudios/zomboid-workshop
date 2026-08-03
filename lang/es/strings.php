@@ -27,6 +27,7 @@ return [
         'votes' => ':count votos',
         'subscribers' => 'Suscriptores',
         'updated' => 'Actualizado',
+        'test_status' => 'Estado de la prueba',
     ],
 
     'row' => [
@@ -95,9 +96,19 @@ return [
         'test_hml_description' => 'Los mods activos + :count candidato(s) se aplicarán en ":server", que se reiniciará ahora. El servidor principal no se ve afectado.',
     ],
 
+    'sections' => [
+        'find' => 'Buscar mods',
+        'find_desc' => 'Busca en la workshop y añade mods — todo mod nuevo entra en la cola de pruebas.',
+        'test' => 'Probar y publicar',
+        'deployed' => 'En el servidor',
+        'deployed_desc' => 'La lista que vale en el servidor — reordena, desactiva o elimina.',
+    ],
+
     'queue' => [
         'hml_configured' => 'Servidor de pruebas: :server',
         'hml_missing' => 'No hay servidor de pruebas configurado — pulsa el matraz (⚗️) arriba para elegir uno.',
+        'status_untested' => 'Esperando prueba',
+        'status_testing' => 'En el servidor de pruebas desde :time',
         'empty_heading' => 'La cola está vacía',
         'empty_description' => 'Todo mod nuevo entra aquí primero. Añade uno desde la búsqueda de la workshop y apruébalo cuando esté probado.',
     ],

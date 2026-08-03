@@ -27,6 +27,7 @@ return [
         'votes' => ':count votes',
         'subscribers' => 'Abonnés',
         'updated' => 'Mis à jour',
+        'test_status' => 'Statut du test',
     ],
 
     'row' => [
@@ -95,9 +96,19 @@ return [
         'test_hml_description' => 'Les mods actifs + :count candidat(s) seront appliqués sur « :server », qui va redémarrer maintenant. Le serveur principal n\'est pas affecté.',
     ],
 
+    'sections' => [
+        'find' => 'Trouver des mods',
+        'find_desc' => 'Cherchez dans le workshop et ajoutez des mods — chaque nouveau mod rejoint la file de test.',
+        'test' => 'Tester et déployer',
+        'deployed' => 'Sur le serveur',
+        'deployed_desc' => 'La liste qui compte sur le serveur — réordonnez, désactivez ou retirez.',
+    ],
+
     'queue' => [
         'hml_configured' => 'Serveur de test : :server',
         'hml_missing' => 'Aucun serveur de test configuré — cliquez sur la fiole (⚗️) en haut pour en choisir un.',
+        'status_untested' => 'En attente de test',
+        'status_testing' => 'Sur le serveur de test depuis :time',
         'empty_heading' => 'La file est vide',
         'empty_description' => 'Chaque nouveau mod arrive ici d\'abord. Ajoutez-en un depuis la recherche du workshop et approuvez-le une fois testé.',
     ],

@@ -27,6 +27,7 @@ return [
         'votes' => ':count 个评价',
         'subscribers' => '订阅者',
         'updated' => '更新时间',
+        'test_status' => '测试状态',
     ],
 
     'row' => [
@@ -95,9 +96,19 @@ return [
         'test_hml_description' => '正式模组 + :count 个候选将应用到“:server”，该服务器将立即重启。主服务器不受影响。',
     ],
 
+    'sections' => [
+        'find' => '查找模组',
+        'find_desc' => '搜索创意工坊并添加模组——新模组会先进入测试队列。',
+        'test' => '测试与部署',
+        'deployed' => '服务器上的模组',
+        'deployed_desc' => '服务器实际使用的列表——可排序、停用或移除。',
+    ],
+
     'queue' => [
         'hml_configured' => '测试服务器：:server',
         'hml_missing' => '尚未配置测试服务器——点击上方的烧瓶（⚗️）选择一个。',
+        'status_untested' => '等待测试',
+        'status_testing' => '自 :time 起在测试服务器上',
         'empty_heading' => '队列是空的',
         'empty_description' => '新模组会先进入这里。从创意工坊搜索标签页添加，测试通过后再批准。',
     ],

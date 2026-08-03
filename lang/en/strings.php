@@ -27,6 +27,7 @@ return [
         'votes' => ':count votes',
         'subscribers' => 'Subscribers',
         'updated' => 'Updated',
+        'test_status' => 'Test status',
     ],
 
     'row' => [
@@ -95,9 +96,19 @@ return [
         'test_hml_description' => 'Active mods + :count candidate(s) will be applied to ":server", which will restart now. The main server is not affected.',
     ],
 
+    'sections' => [
+        'find' => 'Find mods',
+        'find_desc' => 'Search the workshop and add mods — every new mod joins the test queue.',
+        'test' => 'Test & deploy',
+        'deployed' => 'Deployed mods',
+        'deployed_desc' => 'The list that counts on the server — reorder, disable or remove.',
+    ],
+
     'queue' => [
         'hml_configured' => 'Staging server: :server',
         'hml_missing' => 'No staging server configured — click the flask (⚗️) up top to pick one.',
+        'status_untested' => 'Awaiting test',
+        'status_testing' => 'On the staging server since :time',
         'empty_heading' => 'The queue is empty',
         'empty_description' => 'Every new mod lands here first. Add one from the "Browse workshop" tab and approve it once it\'s tested.',
     ],

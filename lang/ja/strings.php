@@ -27,6 +27,7 @@ return [
         'votes' => ':count票',
         'subscribers' => '登録者',
         'updated' => '更新',
+        'test_status' => 'テスト状況',
     ],
 
     'row' => [
@@ -95,9 +96,19 @@ return [
         'test_hml_description' => '有効なMod + 候補:count件が「:server」に適用され、今すぐ再起動します。メインサーバーには影響しません。',
     ],
 
+    'sections' => [
+        'find' => 'Modを探す',
+        'find_desc' => 'ワークショップを検索してModを追加 — 新しいModはまずテスト待ちに入ります。',
+        'test' => 'テストと反映',
+        'deployed' => 'サーバー上のMod',
+        'deployed_desc' => 'サーバーで有効なリスト — 並べ替え、無効化、削除ができます。',
+    ],
+
     'queue' => [
         'hml_configured' => 'テストサーバー: :server',
         'hml_missing' => 'テストサーバーが未設定です。上のフラスコ（⚗️）から選んでください。',
+        'status_untested' => 'テスト待ち',
+        'status_testing' => ':time からテストサーバーで稼働中',
         'empty_heading' => 'キューは空です',
         'empty_description' => '新しいModはまずここに入ります。ワークショップ検索タブから追加し、テスト後に承認してください。',
     ],

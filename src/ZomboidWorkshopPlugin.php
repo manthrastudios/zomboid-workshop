@@ -26,6 +26,11 @@ class ZomboidWorkshopPlugin implements HasPluginSettings, Plugin
             plugin_path($this->getId(), "src/Filament/$id/Pages"),
             "Tevo\\ZomboidWorkshop\\Filament\\$id\\Pages"
         );
+
+        $panel->discoverWidgets(
+            plugin_path($this->getId(), "src/Filament/$id/Widgets"),
+            "Tevo\\ZomboidWorkshop\\Filament\\$id\\Widgets"
+        );
     }
 
     public function boot(Panel $panel): void {}
