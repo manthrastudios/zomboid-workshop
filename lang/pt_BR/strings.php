@@ -51,6 +51,7 @@ return [
         'restart' => 'Reiniciar servidor',
         'configure_hml' => 'Configurar homologação',
         'test_hml' => 'Testar no HML',
+        'start_hml' => 'Ligar servidor de testes',
     ],
 
     'forms' => [
@@ -107,6 +108,7 @@ return [
     'queue' => [
         'hml_configured' => 'Servidor de testes: :server',
         'hml_missing' => 'Nenhum servidor de testes configurado — clique no frasco (⚗️) aqui em cima pra escolher um.',
+        'hml_autostop' => 'desliga sozinho após 10 min sem jogadores',
         'status_untested' => 'Aguardando teste',
         'status_testing' => 'No servidor de testes desde :time',
         'empty_heading' => 'A fila está vazia',
@@ -146,6 +148,9 @@ return [
         'approved_body' => ':title agora faz parte da lista ativa.',
         'hml_saved' => 'Servidor de testes configurado',
         'hml_cleared' => 'Homologação desligada — mods novos voltam a entrar direto na lista',
+        'hml_starting' => ':server ligando…',
+        'hml_starting_body' => 'Leva alguns minutos pra subir (atualiza o jogo e os mods no boot). Desliga sozinho depois de 10 minutos sem jogadores.',
+        'hml_start_failed' => 'Não consegui ligar o servidor de testes',
         'test_sent' => 'Teste enviado pra :server',
         'test_sent_body' => ':count candidato(s) aplicados. O servidor de testes está reiniciando — acompanhe o boot pelo console dele.',
         'test_failed' => 'Não consegui aplicar o teste',

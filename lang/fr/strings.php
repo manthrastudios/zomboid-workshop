@@ -51,6 +51,7 @@ return [
         'restart' => 'Redémarrer le serveur',
         'configure_hml' => 'Configurer le serveur de test',
         'test_hml' => 'Tester sur le serveur de test',
+        'start_hml' => 'Démarrer le serveur de test',
     ],
 
     'forms' => [
@@ -107,6 +108,7 @@ return [
     'queue' => [
         'hml_configured' => 'Serveur de test : :server',
         'hml_missing' => 'Aucun serveur de test configuré — cliquez sur la fiole (⚗️) en haut pour en choisir un.',
+        'hml_autostop' => 's\'éteint tout seul après 10 min sans joueurs',
         'status_untested' => 'En attente de test',
         'status_testing' => 'Sur le serveur de test depuis :time',
         'empty_heading' => 'La file est vide',
@@ -146,6 +148,9 @@ return [
         'approved_body' => ':title fait maintenant partie de la liste active.',
         'hml_saved' => 'Serveur de test configuré',
         'hml_cleared' => 'Homologation désactivée — les nouveaux mods entrent à nouveau directement dans la liste',
+        'hml_starting' => ':server démarre…',
+        'hml_starting_body' => 'Le démarrage prend quelques minutes (le jeu et les mods se mettent à jour au boot). Il s\'éteint tout seul après 10 minutes sans joueurs.',
+        'hml_start_failed' => 'Impossible de démarrer le serveur de test',
         'test_sent' => 'Test envoyé à :server',
         'test_sent_body' => ':count candidat(s) appliqués. Le serveur de test redémarre — suivez le démarrage dans sa console.',
         'test_failed' => 'Impossible d\'appliquer le test',

@@ -51,6 +51,7 @@ return [
         'restart' => 'Restart server',
         'configure_hml' => 'Staging settings',
         'test_hml' => 'Test on staging',
+        'start_hml' => 'Start test server',
     ],
 
     'forms' => [
@@ -107,6 +108,7 @@ return [
     'queue' => [
         'hml_configured' => 'Staging server: :server',
         'hml_missing' => 'No staging server configured — click the flask (⚗️) up top to pick one.',
+        'hml_autostop' => 'shuts down after 10 min with no players',
         'status_untested' => 'Awaiting test',
         'status_testing' => 'On the staging server since :time',
         'empty_heading' => 'The queue is empty',
@@ -146,6 +148,9 @@ return [
         'approved_body' => ':title is now part of the active list.',
         'hml_saved' => 'Staging server configured',
         'hml_cleared' => 'Staging disabled — new mods go straight to the list again',
+        'hml_starting' => ':server is starting…',
+        'hml_starting_body' => 'It takes a few minutes to come up (game and mods update on boot). It shuts itself down after 10 minutes with no players.',
+        'hml_start_failed' => 'Couldn\'t start the test server',
         'test_sent' => 'Test sent to :server',
         'test_sent_body' => ':count candidate(s) applied. The staging server is restarting — watch its console for the boot.',
         'test_failed' => 'Couldn\'t apply the test',

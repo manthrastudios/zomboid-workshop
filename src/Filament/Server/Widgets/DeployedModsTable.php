@@ -20,9 +20,12 @@ class DeployedModsTable extends BaseModsTable
 {
     public function table(Table $table): Table
     {
+        $extras = count($this->getData()['extra_mod_ids']);
+        $extrasNote = $extras > 0 ? ' · '.static::t('badges.loose').': '.$extras : '';
+
         return $table
             ->heading('3 · '.static::t('sections.deployed'))
-            ->description(static::t('sections.deployed_desc'))
+            ->description(static::t('sections.deployed_desc').$extrasNote)
             ->records(function (?string $search) {
                 $mods = static::filterBySearch($this->activeMods(), $search);
 

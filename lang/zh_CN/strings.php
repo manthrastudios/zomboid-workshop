@@ -51,6 +51,7 @@ return [
         'restart' => '重启服务器',
         'configure_hml' => '配置测试服务器',
         'test_hml' => '在测试服务器上试用',
+        'start_hml' => '启动测试服务器',
     ],
 
     'forms' => [
@@ -107,6 +108,7 @@ return [
     'queue' => [
         'hml_configured' => '测试服务器：:server',
         'hml_missing' => '尚未配置测试服务器——点击上方的烧瓶（⚗️）选择一个。',
+        'hml_autostop' => '10 分钟无玩家自动关闭',
         'status_untested' => '等待测试',
         'status_testing' => '自 :time 起在测试服务器上',
         'empty_heading' => '队列是空的',
@@ -146,6 +148,9 @@ return [
         'approved_body' => ':title 已加入正式列表。',
         'hml_saved' => '测试服务器已配置',
         'hml_cleared' => '已关闭测试流程——新模组将再次直接加入列表',
+        'hml_starting' => ':server 正在启动……',
+        'hml_starting_body' => '启动需要几分钟（启动时会更新游戏和模组）。10 分钟无玩家后会自动关闭。',
+        'hml_start_failed' => '无法启动测试服务器',
         'test_sent' => '测试已发送到 :server',
         'test_sent_body' => '已应用 :count 个候选。测试服务器正在重启——可在其控制台查看启动情况。',
         'test_failed' => '无法应用测试',

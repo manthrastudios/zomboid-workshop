@@ -51,6 +51,7 @@ return [
         'restart' => 'Reiniciar servidor',
         'configure_hml' => 'Configurar servidor de pruebas',
         'test_hml' => 'Probar en el servidor de pruebas',
+        'start_hml' => 'Encender el servidor de pruebas',
     ],
 
     'forms' => [
@@ -107,6 +108,7 @@ return [
     'queue' => [
         'hml_configured' => 'Servidor de pruebas: :server',
         'hml_missing' => 'No hay servidor de pruebas configurado — pulsa el matraz (⚗️) arriba para elegir uno.',
+        'hml_autostop' => 'se apaga solo tras 10 min sin jugadores',
         'status_untested' => 'Esperando prueba',
         'status_testing' => 'En el servidor de pruebas desde :time',
         'empty_heading' => 'La cola está vacía',
@@ -146,6 +148,9 @@ return [
         'approved_body' => ':title ya forma parte de la lista activa.',
         'hml_saved' => 'Servidor de pruebas configurado',
         'hml_cleared' => 'Homologación desactivada — los mods nuevos vuelven a entrar directo en la lista',
+        'hml_starting' => ':server está arrancando…',
+        'hml_starting_body' => 'Tarda unos minutos en arrancar (el juego y los mods se actualizan al iniciar). Se apaga solo tras 10 minutos sin jugadores.',
+        'hml_start_failed' => 'No pude encender el servidor de pruebas',
         'test_sent' => 'Prueba enviada a :server',
         'test_sent_body' => ':count candidato(s) aplicados. El servidor de pruebas se está reiniciando — sigue el arranque en su consola.',
         'test_failed' => 'No pude aplicar la prueba',

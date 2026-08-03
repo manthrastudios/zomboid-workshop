@@ -23,7 +23,7 @@ class TestDeployTable extends BaseModsTable
         return $table
             ->heading('2 · '.static::t('sections.test'))
             ->description($hml !== null
-                ? static::t('queue.hml_configured', ['server' => $hml->name])
+                ? static::t('queue.hml_configured', ['server' => $hml->name]).' — '.static::t('queue.hml_autostop')
                 : static::t('queue.hml_missing'))
             ->records(function (?string $search) {
                 $mods = static::filterBySearch($this->candidates(), $search);
@@ -89,6 +89,32 @@ class TestDeployTable extends BaseModsTable
                 $this->removeAction(),
             ])
             ->headerActions([
+                Action::make('start_hml')
+                    ->label(static::t('actions.start_hml'))
+                    ->icon('tabler-player-play')
+                    ->visible(fn () => $this->hmlServer() !== null)
+                    ->action(function (DaemonServerRepository $serverRepository) {
+                        $hml = $this->hmlServer();
+                        if ($hml === null) {
+                            return;
+                        }
+
+                        try {
+                            $serverRepository->setServer($hml)->power('start');
+                            Notification::make()
+                                ->title(static::t('notifications.hml_starting', ['server' => $hml->name]))
+                                ->body(static::t('notifications.hml_starting_body'))
+                                ->success()
+                                ->send();
+                        } catch (Exception $exception) {
+                            report($exception);
+                            Notification::make()
+                                ->title(static::t('notifications.hml_start_failed'))
+                                ->body($exception->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
                 $this->configureHmlAction('configure_hml'),
                 Action::make('test_hml')
                     ->label(static::t('actions.test_hml'))

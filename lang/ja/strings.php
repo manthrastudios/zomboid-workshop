@@ -51,6 +51,7 @@ return [
         'restart' => 'サーバーを再起動',
         'configure_hml' => 'テストサーバー設定',
         'test_hml' => 'テストサーバーで試す',
+        'start_hml' => 'テストサーバーを起動',
     ],
 
     'forms' => [
@@ -107,6 +108,7 @@ return [
     'queue' => [
         'hml_configured' => 'テストサーバー: :server',
         'hml_missing' => 'テストサーバーが未設定です。上のフラスコ（⚗️）から選んでください。',
+        'hml_autostop' => 'プレイヤーが10分いないと自動停止',
         'status_untested' => 'テスト待ち',
         'status_testing' => ':time からテストサーバーで稼働中',
         'empty_heading' => 'キューは空です',
@@ -146,6 +148,9 @@ return [
         'approved_body' => ':title は本番リストに入りました。',
         'hml_saved' => 'テストサーバーを設定しました',
         'hml_cleared' => 'テスト運用をオフにしました — 新しいModは再び直接リストに入ります',
+        'hml_starting' => ':server を起動しています…',
+        'hml_starting_body' => '起動には数分かかります（起動時にゲームとModが更新されます）。プレイヤーが10分間いないと自動で停止します。',
+        'hml_start_failed' => 'テストサーバーを起動できませんでした',
         'test_sent' => ':server にテストを送信しました',
         'test_sent_body' => '候補:count件を適用しました。テストサーバーは再起動中です。起動の様子はコンソールで確認できます。',
         'test_failed' => 'テストを適用できませんでした',

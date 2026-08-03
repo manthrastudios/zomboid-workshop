@@ -51,6 +51,7 @@ return [
         'restart' => 'Server neu starten',
         'configure_hml' => 'Test-Server einstellen',
         'test_hml' => 'Auf Test-Server ausprobieren',
+        'start_hml' => 'Test-Server starten',
     ],
 
     'forms' => [
@@ -107,6 +108,7 @@ return [
     'queue' => [
         'hml_configured' => 'Test-Server: :server',
         'hml_missing' => 'Kein Test-Server eingestellt — klicke oben auf den Kolben (⚗️), um einen zu wählen.',
+        'hml_autostop' => 'schaltet sich nach 10 Min. ohne Spieler ab',
         'status_untested' => 'Wartet auf Test',
         'status_testing' => 'Seit :time auf dem Test-Server',
         'empty_heading' => 'Die Warteschlange ist leer',
@@ -146,6 +148,9 @@ return [
         'approved_body' => ':title gehört jetzt zur aktiven Liste.',
         'hml_saved' => 'Test-Server eingestellt',
         'hml_cleared' => 'Test-Phase abgeschaltet — neue Mods kommen wieder direkt in die Liste',
+        'hml_starting' => ':server startet…',
+        'hml_starting_body' => 'Der Start dauert ein paar Minuten (Spiel und Mods aktualisieren beim Boot). Ohne Spieler schaltet er sich nach 10 Minuten selbst ab.',
+        'hml_start_failed' => 'Test-Server konnte nicht gestartet werden',
         'test_sent' => 'Test an :server geschickt',
         'test_sent_body' => ':count Kandidat(en) angewendet. Der Test-Server startet gerade neu — verfolge den Start in seiner Konsole.',
         'test_failed' => 'Test konnte nicht angewendet werden',

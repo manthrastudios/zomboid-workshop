@@ -5,11 +5,10 @@ namespace Tevo\ZomboidWorkshop\Filament\Server\Pages;
 use App\Models\Server;
 use App\Traits\Filament\BlockAccessInConflict;
 use Filament\Facades\Filament;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Grid;
+use Filament\Resources\Concerns\HasTabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
-use Filament\Support\Enums\TextSize;
 use Livewire\Attributes\On;
 use Tevo\ZomboidWorkshop\Filament\Server\Widgets\DeployedModsTable;
 use Tevo\ZomboidWorkshop\Filament\Server\Widgets\FindModsTable;
@@ -17,13 +16,14 @@ use Tevo\ZomboidWorkshop\Filament\Server\Widgets\TestDeployTable;
 use Tevo\ZomboidWorkshop\Services\ModListService;
 
 /**
- * A página é um contêiner fino: badges de resumo + as três tabelas do
- * fluxo (Buscar → Testar → No servidor), cada uma um widget Livewire
- * próprio que se sincroniza via evento "zw-mods-updated".
+ * A página é um contêiner fino: badges de resumo + abas numeradas na ordem
+ * do fluxo ("1 Buscar → 2 Testar → 3 No servidor"), cada aba renderizando
+ * seu próprio widget de tabela, sincronizados via evento "zw-mods-updated".
  */
 class ZomboidWorkshopPage extends Page
 {
     use BlockAccessInConflict;
+    use HasTabs;
 
     protected static string|\BackedEnum|null $navigationIcon = 'tabler-packages';
 
@@ -76,6 +76,32 @@ class ZomboidWorkshopPage extends Page
         return str_contains(strtolower($server->egg->name ?? ''), 'zomboid');
     }
 
+    public function mount(): void
+    {
+        $this->loadDefaultActiveTab();
+    }
+
+    /** @return array<string, Tab> Abas numeradas na ordem do fluxo, com contadores. */
+    public function getTabs(): array
+    {
+        $mods = $this->getData()['mods'];
+        $queued = count(array_filter($mods, fn ($entry) => static::isCandidate($entry)));
+        $active = count(array_filter($mods, fn ($entry) => !empty($entry['enabled']) && !static::isCandidate($entry)));
+
+        return [
+            'find' => Tab::make('1 · '.static::t('sections.find'))
+                ->icon('tabler-search'),
+            'test' => Tab::make('2 · '.static::t('sections.test'))
+                ->icon('tabler-flask')
+                ->badge($queued ?: null)
+                ->badgeColor('warning'),
+            'deployed' => Tab::make('3 · '.static::t('sections.deployed'))
+                ->icon('tabler-rocket')
+                ->badge($active ?: null)
+                ->badgeColor('success'),
+        ];
+    }
+
     /** @return array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>, homologation: array<string, mixed>} */
     protected function getData(): array
     {
@@ -103,41 +129,16 @@ class ZomboidWorkshopPage extends Page
     {
         return $schema
             ->components([
-                Grid::make(4)
-                    ->schema([
-                        TextEntry::make('total')
-                            ->label(static::t('badges.total'))
-                            ->state(fn () => count($this->getData()['mods']))
-                            ->badge()
-                            ->size(TextSize::Large),
-                        TextEntry::make('ativos')
-                            ->label(static::t('badges.active'))
-                            ->state(fn () => count(array_filter($this->getData()['mods'], fn ($entry) => !empty($entry['enabled']) && !static::isCandidate($entry))))
-                            ->badge()
-                            ->color('success')
-                            ->size(TextSize::Large),
-                        TextEntry::make('candidatos')
-                            ->label(static::t('badges.candidates'))
-                            ->state(fn () => count(array_filter($this->getData()['mods'], fn ($entry) => static::isCandidate($entry))))
-                            ->badge()
-                            ->color('warning')
-                            ->size(TextSize::Large),
-                        TextEntry::make('extras')
-                            ->label(static::t('badges.loose'))
-                            ->state(fn () => count($this->getData()['extra_mod_ids']))
-                            ->badge()
-                            ->color('gray')
-                            ->size(TextSize::Large),
-                    ]),
+                $this->getTabsContentComponent(),
             ]);
     }
 
     protected function getFooterWidgets(): array
     {
-        return [
-            FindModsTable::class,
-            TestDeployTable::class,
-            DeployedModsTable::class,
-        ];
+        return match ($this->activeTab) {
+            'test' => [TestDeployTable::class],
+            'deployed' => [DeployedModsTable::class],
+            default => [FindModsTable::class],
+        };
     }
 }
