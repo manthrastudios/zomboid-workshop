@@ -179,11 +179,6 @@ class ZomboidWorkshopPage extends Page implements HasTable
         return array_values(array_filter($this->getData()['mods'], fn ($entry) => static::isCandidate($entry)));
     }
 
-    protected function homologationEnabled(): bool
-    {
-        return !empty($this->getData()['homologation']['hml_server_id']);
-    }
-
     /** O servidor de homologação configurado, se existir e o usuário puder mexer nele. */
     protected function hmlServer(): ?Server
     {
@@ -247,10 +242,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
             $modIds = array_values(array_unique(array_merge($diskIds, $modIds)));
         }
 
-        // Com homologação configurada, mod novo entra como candidato — só
-        // chega na lista ativa depois de aprovado.
-        $asCandidate = $this->homologationEnabled();
-
+        // Mod novo SEMPRE entra na fila — só chega na lista ativa via "Aprovar".
         $entry = [
             'workshop_id' => $workshopId,
             'title' => $item['title'] ?? "Item $workshopId",
@@ -258,33 +250,25 @@ class ZomboidWorkshopPage extends Page implements HasTable
             'mod_ids' => $modIds,
             'selected_mod_ids' => $modIds,
             'enabled' => true,
+            'status' => 'candidate',
         ];
-        if ($asCandidate) {
-            $entry['status'] = 'candidate';
-        }
 
         $data = $this->getData();
         $data['mods'][] = $entry;
         $this->saveData($data);
 
         if ($notify) {
-            if ($asCandidate && !empty($modIds)) {
+            if (!empty($modIds)) {
                 Notification::make()
                     ->title(static::t('notifications.added_candidate'))
                     ->body(static::t('notifications.added_candidate_body', ['title' => $entry['title']]))
                     ->success()
                     ->send();
-            } elseif (empty($modIds)) {
+            } else {
                 Notification::make()
                     ->title(static::t('notifications.added_no_ids'))
                     ->body(static::t('notifications.added_no_ids_body', ['rescan' => static::t('row.rescan')]))
                     ->warning()
-                    ->send();
-            } else {
-                Notification::make()
-                    ->title(static::t('notifications.added'))
-                    ->body(static::t('notifications.added_body', ['title' => $item['title'], 'ids' => implode(', ', $modIds)]))
-                    ->success()
                     ->send();
             }
         }
@@ -412,7 +396,10 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         : '—')
                     ->visible(fn () => $this->activeTab === 'search'),
             ])
-            ->filters([
+            // registro condicional (não ->visible()): o schema dos filtros é
+            // reconstruído a cada request, e com visible() eles somem ao
+            // trocar de aba e voltar
+            ->filters($this->activeTab !== 'search' ? [] : [
                 SelectFilter::make('sort')
                     ->label(static::t('filters.sort'))
                     ->options([
@@ -422,8 +409,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         'top' => static::t('filters.sort_top'),
                         'subscribed' => static::t('filters.sort_subscribed'),
                         'updated' => static::t('filters.sort_updated'),
-                    ])
-                    ->visible(fn () => $this->activeTab === 'search'),
+                    ]),
                 SelectFilter::make('period')
                     ->label(static::t('filters.period'))
                     ->options([
@@ -431,20 +417,17 @@ class ZomboidWorkshopPage extends Page implements HasTable
                         '7' => static::t('filters.period_week'),
                         '30' => static::t('filters.period_month'),
                         '365' => static::t('filters.period_year'),
-                    ])
-                    ->visible(fn () => $this->activeTab === 'search'),
+                    ]),
                 SelectFilter::make('build')
                     ->label(static::t('filters.build'))
                     ->options([
                         'Build 42' => 'Build 42',
                         'Build 41' => 'Build 41',
-                    ])
-                    ->visible(fn () => $this->activeTab === 'search'),
+                    ]),
                 SelectFilter::make('category')
                     ->label(static::t('filters.category'))
                     ->options(array_combine(self::PZ_TAGS, self::PZ_TAGS))
-                    ->searchable()
-                    ->visible(fn () => $this->activeTab === 'search'),
+                    ->searchable(),
             ], layout: FiltersLayout::AboveContent)
             ->deferFilters(false)
             ->recordUrl(fn (array $record) => 'https://steamcommunity.com/sharedfiles/filedetails/?id='.$record['workshop_id'], true)
