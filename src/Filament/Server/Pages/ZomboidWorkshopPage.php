@@ -305,7 +305,9 @@ class ZomboidWorkshopPage extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->records(function (?string $search, int $page, array $filters) {
+            ->records(function (?string $search, int $page, ?array $filters = null) {
+                $filters ??= [];
+
                 if ($this->activeTab === 'search') {
                     try {
                         $tags = array_values(array_filter([
