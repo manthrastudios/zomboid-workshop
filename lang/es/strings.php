@@ -41,6 +41,7 @@ return [
         'add' => 'Añadir',
         'in_list' => 'En tu lista',
         'approve' => 'Aprobar (pasa a la lista activa)',
+        'reject' => 'Rechazar (sale de la cola y limpia el servidor de pruebas)',
     ],
 
     'actions' => [
@@ -95,6 +96,8 @@ return [
         'approve_description' => '¿Aprobar ":title"? Sale de los candidatos y entra en la lista activa — se aplica al servidor principal la próxima vez que guardes la lista.',
         'test_hml_heading' => '¿Probar los candidatos en el servidor de pruebas?',
         'test_hml_description' => 'Los mods activos + :count candidato(s) se aplicarán en ":server", que se reiniciará ahora. El servidor principal no se ve afectado.',
+        'reject_heading' => 'Rechazar mod',
+        'reject_description' => '¿Quitar ":title" de la cola? Sus archivos descargados en el servidor de pruebas también se eliminan. El servidor principal no se ve afectado.',
     ],
 
     'sections' => [
@@ -155,6 +158,9 @@ return [
         'test_sent_body' => ':count candidato(s) aplicados. El servidor de pruebas se está reiniciando — sigue el arranque en su consola.',
         'test_failed' => 'No pude aplicar la prueba',
         'no_candidates' => 'No hay candidatos para probar',
+        'rejected' => 'Rechazado',
+        'rejected_body' => ':title salió de la cola y sus archivos se eliminaron del servidor de pruebas.',
+        'rejected_body_no_hml' => ':title salió de la cola.',
     ],
 
     'settings' => [

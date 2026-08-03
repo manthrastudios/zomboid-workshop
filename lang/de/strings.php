@@ -41,6 +41,7 @@ return [
         'add' => 'Hinzufügen',
         'in_list' => 'In deiner Liste',
         'approve' => 'Freigeben (in die aktive Liste)',
+        'reject' => 'Ablehnen (verlässt die Warteschlange, räumt den Test-Server auf)',
     ],
 
     'actions' => [
@@ -95,6 +96,8 @@ return [
         'approve_description' => '":title" freigeben? Er verlässt die Kandidaten und kommt in die aktive Liste — live geht er beim nächsten Speichern der Liste.',
         'test_hml_heading' => 'Kandidaten auf dem Test-Server ausprobieren?',
         'test_hml_description' => 'Aktive Mods + :count Kandidat(en) werden auf ":server" angewendet, der jetzt neu startet. Der Hauptserver bleibt unberührt.',
+        'reject_heading' => 'Mod ablehnen',
+        'reject_description' => '":title" aus der Warteschlange entfernen? Die heruntergeladenen Dateien auf dem Test-Server werden ebenfalls gelöscht. Der Hauptserver bleibt unberührt.',
     ],
 
     'sections' => [
@@ -155,6 +158,9 @@ return [
         'test_sent_body' => ':count Kandidat(en) angewendet. Der Test-Server startet gerade neu — verfolge den Start in seiner Konsole.',
         'test_failed' => 'Test konnte nicht angewendet werden',
         'no_candidates' => 'Keine Kandidaten zum Testen',
+        'rejected' => 'Abgelehnt',
+        'rejected_body' => ':title hat die Warteschlange verlassen und seine Dateien wurden vom Test-Server gelöscht.',
+        'rejected_body_no_hml' => ':title hat die Warteschlange verlassen.',
     ],
 
     'settings' => [

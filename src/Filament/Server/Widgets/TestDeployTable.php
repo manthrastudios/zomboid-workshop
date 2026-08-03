@@ -2,6 +2,7 @@
 
 namespace Tevo\ZomboidWorkshop\Filament\Server\Widgets;
 
+use App\Repositories\Daemon\DaemonFileRepository;
 use App\Repositories\Daemon\DaemonServerRepository;
 use Exception;
 use Filament\Actions\Action;
@@ -9,6 +10,7 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Tevo\ZomboidWorkshop\Services\SteamWorkshopService;
 
 /**
  * Seção 2 — fila de teste. Mods esperando validação no servidor de
@@ -86,7 +88,34 @@ class TestDeployTable extends BaseModsTable
                 $this->moveDownAction(true),
                 $this->editIdsAction(),
                 $this->rescanAction(),
-                $this->removeAction(),
+                Action::make('reject')
+                    ->iconButton()
+                    ->icon('tabler-trash')
+                    ->color('danger')
+                    ->tooltip(static::t('row.reject'))
+                    ->requiresConfirmation()
+                    ->modalHeading(static::t('modals.reject_heading'))
+                    ->modalDescription(fn (array $record) => static::t('modals.reject_description', ['title' => $record['title']]))
+                    ->action(function (array $record) {
+                        $workshopId = (string) $record['workshop_id'];
+
+                        $data = $this->getData();
+                        $index = $this->findIndex($workshopId);
+                        if ($index === null) {
+                            return;
+                        }
+
+                        unset($data['mods'][$index]);
+                        $this->saveData($data);
+
+                        $cleaned = $this->cleanupOnHml($workshopId);
+
+                        Notification::make()
+                            ->title(static::t('notifications.rejected'))
+                            ->body(static::t($cleaned ? 'notifications.rejected_body' : 'notifications.rejected_body_no_hml', ['title' => $record['title']]))
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->headerActions([
                 Action::make('start_hml')
@@ -188,6 +217,49 @@ class TestDeployTable extends BaseModsTable
                     ->button()
                     ->visible(fn () => $this->hmlServer() === null),
             ]);
+    }
+
+    /**
+     * Limpa um candidato reprovado do servidor de testes: sai da lista e do
+     * ini de lá, e os arquivos baixados da workshop são apagados (mod grande
+     * ocupa centenas de MB). Best-effort — HML desligado não atrapalha a
+     * reprovação em si. Retorna se a limpeza foi tentada.
+     */
+    protected function cleanupOnHml(string $workshopId): bool
+    {
+        $hml = $this->hmlServer();
+        if ($hml === null) {
+            return false;
+        }
+
+        try {
+            $hmlData = $this->modList()->load($hml);
+            $before = count($hmlData['mods']);
+            $hmlData['mods'] = array_values(array_filter(
+                $hmlData['mods'],
+                fn ($entry) => (string) $entry['workshop_id'] !== $workshopId
+            ));
+
+            if (count($hmlData['mods']) !== $before) {
+                $this->modList()->save($hml, $hmlData);
+
+                try {
+                    $this->modList()->applyToIni($hml, $hmlData);
+                } catch (Exception) {
+                    // HML nunca bootou (sem ini) — a lista já foi limpa, segue
+                }
+            }
+
+            app(DaemonFileRepository::class)
+                ->setServer($hml)
+                ->deleteFiles('steamapps/workshop/content/'.SteamWorkshopService::PZ_APP_ID, [$workshopId]);
+
+            return true;
+        } catch (Exception $exception) {
+            report($exception);
+
+            return false;
+        }
     }
 
     /** O mod está no lote do último teste enviado pro HML? */

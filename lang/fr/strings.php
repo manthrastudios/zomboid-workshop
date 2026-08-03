@@ -41,6 +41,7 @@ return [
         'add' => 'Ajouter',
         'in_list' => 'Dans votre liste',
         'approve' => 'Approuver (passe dans la liste active)',
+        'reject' => 'Rejeter (quitte la file et nettoie le serveur de test)',
     ],
 
     'actions' => [
@@ -95,6 +96,8 @@ return [
         'approve_description' => 'Approuver « :title » ? Il quitte les candidats et rejoint la liste active — il s\'appliquera au serveur principal au prochain enregistrement de la liste.',
         'test_hml_heading' => 'Tester les candidats sur le serveur de test ?',
         'test_hml_description' => 'Les mods actifs + :count candidat(s) seront appliqués sur « :server », qui va redémarrer maintenant. Le serveur principal n\'est pas affecté.',
+        'reject_heading' => 'Rejeter le mod',
+        'reject_description' => 'Retirer « :title » de la file ? Ses fichiers téléchargés sur le serveur de test sont aussi supprimés. Le serveur principal n\'est pas affecté.',
     ],
 
     'sections' => [
@@ -155,6 +158,9 @@ return [
         'test_sent_body' => ':count candidat(s) appliqués. Le serveur de test redémarre — suivez le démarrage dans sa console.',
         'test_failed' => 'Impossible d\'appliquer le test',
         'no_candidates' => 'Aucun candidat à tester',
+        'rejected' => 'Rejeté',
+        'rejected_body' => ':title a quitté la file et ses fichiers ont été supprimés du serveur de test.',
+        'rejected_body_no_hml' => ':title a quitté la file.',
     ],
 
     'settings' => [

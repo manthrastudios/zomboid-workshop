@@ -41,6 +41,7 @@ return [
         'add' => '追加',
         'in_list' => 'リストにあります',
         'approve' => '承認（本番リストへ）',
+        'reject' => '不採用にする（キューから外し、テストサーバーも掃除）',
     ],
 
     'actions' => [
@@ -95,6 +96,8 @@ return [
         'approve_description' => '「:title」を承認しますか？候補から本番リストに移り、次にリストを保存したときにメインサーバーへ反映されます。',
         'test_hml_heading' => '候補をテストサーバーで試しますか？',
         'test_hml_description' => '有効なMod + 候補:count件が「:server」に適用され、今すぐ再起動します。メインサーバーには影響しません。',
+        'reject_heading' => 'Modを不採用にする',
+        'reject_description' => '「:title」をキューから外しますか？テストサーバーにダウンロードされたファイルも削除されます。メインサーバーには影響しません。',
     ],
 
     'sections' => [
@@ -155,6 +158,9 @@ return [
         'test_sent_body' => '候補:count件を適用しました。テストサーバーは再起動中です。起動の様子はコンソールで確認できます。',
         'test_failed' => 'テストを適用できませんでした',
         'no_candidates' => 'テストする候補がありません',
+        'rejected' => '不採用にしました',
+        'rejected_body' => ':title はキューから外れ、テストサーバーのファイルも削除されました。',
+        'rejected_body_no_hml' => ':title はキューから外れました。',
     ],
 
     'settings' => [

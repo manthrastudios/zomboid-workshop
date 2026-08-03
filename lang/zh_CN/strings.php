@@ -41,6 +41,7 @@ return [
         'add' => '添加',
         'in_list' => '已在列表中',
         'approve' => '批准（进入正式列表）',
+        'reject' => '淘汰（移出队列并清理测试服务器）',
     ],
 
     'actions' => [
@@ -95,6 +96,8 @@ return [
         'approve_description' => '批准“:title”吗？它将离开候选、加入正式列表——下次保存列表时应用到主服务器。',
         'test_hml_heading' => '在测试服务器上试用候选模组？',
         'test_hml_description' => '正式模组 + :count 个候选将应用到“:server”，该服务器将立即重启。主服务器不受影响。',
+        'reject_heading' => '淘汰模组',
+        'reject_description' => '将“:title”移出队列吗？它在测试服务器上下载的文件也会被删除。主服务器不受影响。',
     ],
 
     'sections' => [
@@ -155,6 +158,9 @@ return [
         'test_sent_body' => '已应用 :count 个候选。测试服务器正在重启——可在其控制台查看启动情况。',
         'test_failed' => '无法应用测试',
         'no_candidates' => '没有可测试的候选',
+        'rejected' => '已淘汰',
+        'rejected_body' => ':title 已移出队列，其在测试服务器上的文件已删除。',
+        'rejected_body_no_hml' => ':title 已移出队列。',
     ],
 
     'settings' => [

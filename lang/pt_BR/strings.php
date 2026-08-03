@@ -41,6 +41,7 @@ return [
         'add' => 'Adicionar',
         'in_list' => 'Na sua lista',
         'approve' => 'Aprovar (vai pra lista ativa)',
+        'reject' => 'Reprovar (sai da fila e limpa o servidor de testes)',
     ],
 
     'actions' => [
@@ -95,6 +96,8 @@ return [
         'approve_description' => 'Aprovar ":title"? Ele sai dos candidatos e entra na lista ativa — passa a valer no servidor principal na próxima vez que a lista for salva.',
         'test_hml_heading' => 'Testar candidatos no servidor de testes?',
         'test_hml_description' => 'Os mods ativos + :count candidato(s) serão aplicados em ":server", que vai reiniciar agora. O servidor principal não é afetado.',
+        'reject_heading' => 'Reprovar mod',
+        'reject_description' => 'Remover ":title" da fila? Os arquivos baixados no servidor de testes também são apagados. O servidor principal não é afetado.',
     ],
 
     'sections' => [
@@ -155,6 +158,9 @@ return [
         'test_sent_body' => ':count candidato(s) aplicados. O servidor de testes está reiniciando — acompanhe o boot pelo console dele.',
         'test_failed' => 'Não consegui aplicar o teste',
         'no_candidates' => 'Nenhum candidato pra testar',
+        'rejected' => 'Reprovado',
+        'rejected_body' => ':title saiu da fila e os arquivos dele no servidor de testes foram apagados.',
+        'rejected_body_no_hml' => ':title saiu da fila.',
     ],
 
     'settings' => [

@@ -41,6 +41,7 @@ return [
         'add' => 'Add',
         'in_list' => 'In your list',
         'approve' => 'Approve (move to active list)',
+        'reject' => 'Reject (leaves the queue, cleans the staging server)',
     ],
 
     'actions' => [
@@ -95,6 +96,8 @@ return [
         'approve_description' => 'Approve ":title"? It leaves the candidates and joins the active list — it goes live on the main server next time the list is saved.',
         'test_hml_heading' => 'Test candidates on the staging server?',
         'test_hml_description' => 'Active mods + :count candidate(s) will be applied to ":server", which will restart now. The main server is not affected.',
+        'reject_heading' => 'Reject mod',
+        'reject_description' => 'Remove ":title" from the queue? Its downloaded files on the staging server are deleted too. The main server is not affected.',
     ],
 
     'sections' => [
@@ -155,6 +158,9 @@ return [
         'test_sent_body' => ':count candidate(s) applied. The staging server is restarting — watch its console for the boot.',
         'test_failed' => 'Couldn\'t apply the test',
         'no_candidates' => 'No candidates to test',
+        'rejected' => 'Rejected',
+        'rejected_body' => ':title left the queue and its files were deleted from the staging server.',
+        'rejected_body_no_hml' => ':title left the queue.',
     ],
 
     'settings' => [
