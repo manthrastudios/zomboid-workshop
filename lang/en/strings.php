@@ -7,14 +7,14 @@ return [
     'tabs' => [
         'mods' => 'My mods',
         'search' => 'Browse workshop',
-        'candidates' => 'Candidates',
+        'candidates' => 'Mod queue',
     ],
 
     'badges' => [
         'total' => 'In the list',
         'active' => 'Active',
         'loose' => 'Unmatched mod IDs',
-        'candidates' => 'Candidates',
+        'candidates' => 'Queued',
     ],
 
     'columns' => [
@@ -23,6 +23,10 @@ return [
         'active' => 'Active',
         'none_detected' => 'none detected yet',
         'workshop' => 'Workshop :id',
+        'rating' => 'Rating',
+        'votes' => ':count votes',
+        'subscribers' => 'Subscribers',
+        'updated' => 'Updated',
     ],
 
     'row' => [
@@ -65,6 +69,8 @@ return [
         'sort_relevance' => 'Relevance',
         'sort_newest' => 'Most recent',
         'sort_top' => 'Top rated',
+        'sort_subscribed' => 'Most subscribed',
+        'sort_updated' => 'Recently updated',
         'period' => 'Trending period',
         'period_day' => 'Today',
         'period_week' => 'This week',
@@ -116,8 +122,8 @@ return [
         'search_needs_key' => 'In-panel search needs a Steam API key. An administrator can set it up in Admin → Plugins → Zomboid Workshop Mods.',
         'restart_sent' => 'Restarting… the server will be back in a few minutes',
         'restart_failed' => 'Couldn\'t restart the server',
-        'added_candidate' => 'Candidate added',
-        'added_candidate_body' => ':title joined the Candidates tab — test it on the staging server and approve it when it looks good.',
+        'added_candidate' => 'Added to the mod queue',
+        'added_candidate_body' => ':title is in the Mod queue — test it on the staging server and approve it when it looks good.',
         'approved' => 'Mod approved!',
         'approved_body' => ':title is now part of the active list.',
         'hml_saved' => 'Staging server configured',

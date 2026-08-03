@@ -7,14 +7,14 @@ return [
     'tabs' => [
         'mods' => '我的模组',
         'search' => '浏览创意工坊',
-        'candidates' => '候选',
+        'candidates' => '模组队列',
     ],
 
     'badges' => [
         'total' => '列表中',
         'active' => '已启用',
         'loose' => '未匹配的Mod ID',
-        'candidates' => '候选',
+        'candidates' => '队列中',
     ],
 
     'columns' => [
@@ -23,6 +23,10 @@ return [
         'active' => '启用',
         'none_detected' => '尚未检测到',
         'workshop' => '创意工坊 :id',
+        'rating' => '评分',
+        'votes' => ':count 个评价',
+        'subscribers' => '订阅者',
+        'updated' => '更新时间',
     ],
 
     'row' => [
@@ -65,6 +69,8 @@ return [
         'sort_relevance' => '相关性',
         'sort_newest' => '最新',
         'sort_top' => '好评最多',
+        'sort_subscribed' => '订阅最多',
+        'sort_updated' => '最近更新',
         'period' => '热门时间段',
         'period_day' => '今天',
         'period_week' => '本周',
@@ -116,8 +122,8 @@ return [
         'search_needs_key' => '面板内搜索需要Steam API密钥。管理员可在 Admin → Plugins → Zomboid Workshop Mods 中配置。',
         'restart_sent' => '正在重启……服务器几分钟后恢复',
         'restart_failed' => '无法重启服务器',
-        'added_candidate' => '已添加候选',
-        'added_candidate_body' => ':title 已进入“候选”标签页——在测试服务器上试用，确认没问题后再批准。',
+        'added_candidate' => '已加入模组队列',
+        'added_candidate_body' => ':title 已进入模组队列——在测试服务器上试用，确认没问题后再批准。',
         'approved' => '模组已批准！',
         'approved_body' => ':title 已加入正式列表。',
         'hml_saved' => '测试服务器已配置',

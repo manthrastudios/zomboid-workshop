@@ -7,14 +7,14 @@ return [
     'tabs' => [
         'mods' => 'Mis mods',
         'search' => 'Explorar workshop',
-        'candidates' => 'Candidatos',
+        'candidates' => 'Cola de mods',
     ],
 
     'badges' => [
         'total' => 'En la lista',
         'active' => 'Activos',
         'loose' => 'Mod IDs sueltos',
-        'candidates' => 'Candidatos',
+        'candidates' => 'En cola',
     ],
 
     'columns' => [
@@ -23,6 +23,10 @@ return [
         'active' => 'Activo',
         'none_detected' => 'ninguno detectado aún',
         'workshop' => 'Workshop :id',
+        'rating' => 'Valoración',
+        'votes' => ':count votos',
+        'subscribers' => 'Suscriptores',
+        'updated' => 'Actualizado',
     ],
 
     'row' => [
@@ -65,6 +69,8 @@ return [
         'sort_relevance' => 'Relevancia',
         'sort_newest' => 'Más recientes',
         'sort_top' => 'Mejor valorados',
+        'sort_subscribed' => 'Más suscritos',
+        'sort_updated' => 'Actualizados hace poco',
         'period' => 'Período de tendencias',
         'period_day' => 'Hoy',
         'period_week' => 'Esta semana',
@@ -116,8 +122,8 @@ return [
         'search_needs_key' => 'La búsqueda en el panel necesita una clave de Steam API. Un administrador puede configurarla en Admin → Plugins → Zomboid Workshop Mods.',
         'restart_sent' => 'Reiniciando… el servidor vuelve en unos minutos',
         'restart_failed' => 'No pude reiniciar el servidor',
-        'added_candidate' => 'Candidato añadido',
-        'added_candidate_body' => ':title entró en la pestaña Candidatos — pruébalo en el servidor de pruebas y apruébalo cuando esté bien.',
+        'added_candidate' => 'Añadido a la cola de mods',
+        'added_candidate_body' => ':title está en la Cola de mods — pruébalo en el servidor de pruebas y apruébalo cuando esté bien.',
         'approved' => '¡Mod aprobado!',
         'approved_body' => ':title ya forma parte de la lista activa.',
         'hml_saved' => 'Servidor de pruebas configurado',

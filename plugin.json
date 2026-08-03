@@ -2,7 +2,7 @@
     "id": "zomboid-workshop",
     "name": "Zomboid Workshop Mods",
     "author": "Tevo",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "Manage Steam Workshop mods on Project Zomboid servers: search, add by URL/ID, import collections, toggle, reorder and apply — no more hand-editing Mods= lines. Optional staging flow: test candidate mods on a second server before they go live.",
     "category": "plugin",
     "url": "https://github.com/manthrastudios/zomboid-workshop",

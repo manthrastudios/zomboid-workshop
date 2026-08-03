@@ -7,14 +7,14 @@ return [
     'tabs' => [
         'mods' => 'Mes mods',
         'search' => 'Parcourir le workshop',
-        'candidates' => 'Candidats',
+        'candidates' => 'File des mods',
     ],
 
     'badges' => [
         'total' => 'Dans la liste',
         'active' => 'Actifs',
         'loose' => 'Mod IDs orphelins',
-        'candidates' => 'Candidats',
+        'candidates' => 'En file',
     ],
 
     'columns' => [
@@ -23,6 +23,10 @@ return [
         'active' => 'Actif',
         'none_detected' => 'aucun détecté pour l\'instant',
         'workshop' => 'Workshop :id',
+        'rating' => 'Note',
+        'votes' => ':count votes',
+        'subscribers' => 'Abonnés',
+        'updated' => 'Mis à jour',
     ],
 
     'row' => [
@@ -65,6 +69,8 @@ return [
         'sort_relevance' => 'Pertinence',
         'sort_newest' => 'Plus récents',
         'sort_top' => 'Mieux notés',
+        'sort_subscribed' => 'Plus abonnés',
+        'sort_updated' => 'Mis à jour récemment',
         'period' => 'Période des tendances',
         'period_day' => "Aujourd'hui",
         'period_week' => 'Cette semaine',
@@ -116,8 +122,8 @@ return [
         'search_needs_key' => 'La recherche dans le panneau nécessite une clé Steam API. Un administrateur peut la configurer dans Admin → Plugins → Zomboid Workshop Mods.',
         'restart_sent' => 'Redémarrage… le serveur revient dans quelques minutes',
         'restart_failed' => 'Impossible de redémarrer le serveur',
-        'added_candidate' => 'Candidat ajouté',
-        'added_candidate_body' => ':title a rejoint l\'onglet Candidats — testez-le sur le serveur de test et approuvez-le quand tout est bon.',
+        'added_candidate' => 'Ajouté à la file des mods',
+        'added_candidate_body' => ':title est dans la File des mods — testez-le sur le serveur de test et approuvez-le quand tout est bon.',
         'approved' => 'Mod approuvé !',
         'approved_body' => ':title fait maintenant partie de la liste active.',
         'hml_saved' => 'Serveur de test configuré',

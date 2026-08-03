@@ -7,14 +7,14 @@ return [
     'tabs' => [
         'mods' => 'マイMOD',
         'search' => 'ワークショップを探す',
-        'candidates' => '候補',
+        'candidates' => 'Modキュー',
     ],
 
     'badges' => [
         'total' => 'リスト内',
         'active' => '有効',
         'loose' => '未対応のMod ID',
-        'candidates' => '候補',
+        'candidates' => 'キュー内',
     ],
 
     'columns' => [
@@ -23,6 +23,10 @@ return [
         'active' => '有効',
         'none_detected' => 'まだ検出されていません',
         'workshop' => 'ワークショップ :id',
+        'rating' => '評価',
+        'votes' => ':count票',
+        'subscribers' => '登録者',
+        'updated' => '更新',
     ],
 
     'row' => [
@@ -65,6 +69,8 @@ return [
         'sort_relevance' => '関連度',
         'sort_newest' => '新着順',
         'sort_top' => '高評価順',
+        'sort_subscribed' => '登録者数順',
+        'sort_updated' => '最近更新された順',
         'period' => 'トレンドの期間',
         'period_day' => '今日',
         'period_week' => '今週',
@@ -116,8 +122,8 @@ return [
         'search_needs_key' => 'パネル内検索にはSteam APIキーが必要です。管理者が Admin → Plugins → Zomboid Workshop Mods で設定できます。',
         'restart_sent' => '再起動中… サーバーは数分で戻ります',
         'restart_failed' => 'サーバーを再起動できませんでした',
-        'added_candidate' => '候補を追加しました',
-        'added_candidate_body' => ':title は「候補」タブに入りました。テストサーバーで試して、問題なければ承認してください。',
+        'added_candidate' => 'Modキューに追加しました',
+        'added_candidate_body' => ':title はModキューに入りました。テストサーバーで試して、問題なければ承認してください。',
         'approved' => 'Modを承認しました！',
         'approved_body' => ':title は本番リストに入りました。',
         'hml_saved' => 'テストサーバーを設定しました',

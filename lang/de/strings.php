@@ -7,14 +7,14 @@ return [
     'tabs' => [
         'mods' => 'Meine Mods',
         'search' => 'Workshop durchsuchen',
-        'candidates' => 'Kandidaten',
+        'candidates' => 'Mod-Warteschlange',
     ],
 
     'badges' => [
         'total' => 'In der Liste',
         'active' => 'Aktiv',
         'loose' => 'Lose Mod-IDs',
-        'candidates' => 'Kandidaten',
+        'candidates' => 'In der Warteschlange',
     ],
 
     'columns' => [
@@ -23,6 +23,10 @@ return [
         'active' => 'Aktiv',
         'none_detected' => 'noch keine erkannt',
         'workshop' => 'Workshop :id',
+        'rating' => 'Bewertung',
+        'votes' => ':count Stimmen',
+        'subscribers' => 'Abonnenten',
+        'updated' => 'Aktualisiert',
     ],
 
     'row' => [
@@ -65,6 +69,8 @@ return [
         'sort_relevance' => 'Relevanz',
         'sort_newest' => 'Neueste',
         'sort_top' => 'Am besten bewertet',
+        'sort_subscribed' => 'Meist abonniert',
+        'sort_updated' => 'Kürzlich aktualisiert',
         'period' => 'Trend-Zeitraum',
         'period_day' => 'Heute',
         'period_week' => 'Diese Woche',
@@ -116,8 +122,8 @@ return [
         'search_needs_key' => 'Die Suche im Panel benötigt einen Steam-API-Schlüssel. Ein Administrator kann ihn unter Admin → Plugins → Zomboid Workshop Mods einrichten.',
         'restart_sent' => 'Neustart läuft… der Server ist in wenigen Minuten zurück',
         'restart_failed' => 'Server konnte nicht neu gestartet werden',
-        'added_candidate' => 'Kandidat hinzugefügt',
-        'added_candidate_body' => ':title ist jetzt im Tab Kandidaten — teste ihn auf dem Test-Server und gib ihn frei, wenn alles passt.',
+        'added_candidate' => 'In die Mod-Warteschlange aufgenommen',
+        'added_candidate_body' => ':title ist in der Mod-Warteschlange — teste ihn auf dem Test-Server und gib ihn frei, wenn alles passt.',
         'approved' => 'Mod freigegeben!',
         'approved_body' => ':title gehört jetzt zur aktiven Liste.',
         'hml_saved' => 'Test-Server eingestellt',

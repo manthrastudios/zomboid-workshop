@@ -76,7 +76,7 @@ class SteamWorkshopService
      * @throws Exception
      */
     /**
-     * @param string $sort auto|relevance|trend|newest|top
+     * @param string $sort auto|relevance|trend|newest|top|subscribed|updated
      * @param array<int, string> $tags tags exigidas (ex.: ["Build 42", "Weapons"])
      */
     public function search(?string $text, int $page = 1, int $perPage = 20, string $sort = 'auto', int $days = 7, array $tags = []): array
@@ -86,12 +86,15 @@ class SteamWorkshopService
             throw new Exception(trans('zomboid-workshop::strings.notifications.search_needs_key'));
         }
 
-        // query_type: 12 = por texto, 3 = em alta (days), 1 = recentes, 0 = mais votados
+        // query_type: 12 = por texto, 3 = em alta (days), 1 = recentes,
+        // 0 = mais votados, 9 = mais assinados, 21 = atualizados há pouco
         $queryType = match ($sort) {
             'relevance' => 12,
             'trend' => 3,
             'newest' => 1,
             'top' => 0,
+            'subscribed' => 9,
+            'updated' => 21,
             default => filled($text) ? 12 : 3,
         };
 
@@ -102,6 +105,7 @@ class SteamWorkshopService
             'numperpage' => $perPage,
             'return_previews' => true,
             'return_short_description' => true,
+            'return_vote_data' => true,
             'query_type' => $queryType,
             'days' => $days,
         ];
@@ -124,11 +128,17 @@ class SteamWorkshopService
 
         $items = [];
         foreach ($response['response']['publishedfiledetails'] ?? [] as $item) {
+            $votes = ((int) ($item['vote_data']['votes_up'] ?? 0)) + ((int) ($item['vote_data']['votes_down'] ?? 0));
+
             $items[] = [
                 'workshop_id' => (string) $item['publishedfileid'],
                 'title' => $item['title'] ?? ('Item '.$item['publishedfileid']),
                 'short_description' => $item['short_description'] ?? '',
                 'preview_url' => $item['preview_url'] ?? null,
+                'score' => isset($item['vote_data']['score']) ? (float) $item['vote_data']['score'] : null,
+                'votes' => $votes,
+                'subscriptions' => isset($item['subscriptions']) ? (int) $item['subscriptions'] : null,
+                'time_updated' => isset($item['time_updated']) ? (int) $item['time_updated'] : null,
             ];
         }
 

@@ -24,6 +24,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -47,6 +49,16 @@ class ZomboidWorkshopPage extends Page implements HasTable
     protected static function t(string $key, array $replace = []): string
     {
         return trans('zomboid-workshop::strings.'.$key, $replace);
+    }
+
+    /** 1234 → "1.2k", 5600000 → "5.6M" (sem depender da extensão intl) */
+    protected static function compactNumber(int $number): string
+    {
+        return match (true) {
+            $number >= 1_000_000 => rtrim(rtrim(number_format($number / 1_000_000, 1), '0'), '.').'M',
+            $number >= 1_000 => rtrim(rtrim(number_format($number / 1_000, 1), '0'), '.').'k',
+            default => (string) $number,
+        };
     }
 
     public static function getNavigationSort(): ?int
@@ -290,28 +302,23 @@ class ZomboidWorkshopPage extends Page implements HasTable
         'Silly/Fun', 'Textures', 'Traits', 'Vehicles', 'Weapons',
     ];
 
-    public ?string $searchSort = null;
-
-    public ?string $searchPeriod = null;
-
-    public ?string $searchBuild = null;
-
-    public ?string $searchCategory = null;
-
     public function table(Table $table): Table
     {
         return $table
-            ->records(function (?string $search, int $page) {
+            ->records(function (?string $search, int $page, array $filters) {
                 if ($this->activeTab === 'search') {
                     try {
-                        $tags = array_values(array_filter([$this->searchBuild, $this->searchCategory]));
+                        $tags = array_values(array_filter([
+                            $filters['build']['value'] ?? null,
+                            $filters['category']['value'] ?? null,
+                        ]));
 
                         $result = $this->steam()->search(
                             $search,
                             $page,
                             20,
-                            $this->searchSort ?? 'auto',
-                            (int) ($this->searchPeriod ?? 7),
+                            $filters['sort']['value'] ?? 'auto',
+                            (int) (($filters['period']['value'] ?? null) ?: 7),
                             $tags,
                         );
 
@@ -375,7 +382,69 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     ->label(static::t('columns.active'))
                     ->boolean()
                     ->visible(fn () => $this->activeTab === 'mods'),
+                TextColumn::make('score')
+                    ->label(static::t('columns.rating'))
+                    ->color('warning')
+                    ->state(function (array $record): string {
+                        if (($record['votes'] ?? 0) < 1 || !isset($record['score'])) {
+                            return '—';
+                        }
+                        $stars = (int) round(((float) $record['score']) * 5);
+
+                        return str_repeat('★', $stars).str_repeat('☆', 5 - $stars);
+                    })
+                    ->description(fn (array $record) => ($record['votes'] ?? 0) > 0
+                        ? static::t('columns.votes', ['count' => number_format($record['votes'])])
+                        : null)
+                    ->visible(fn () => $this->activeTab === 'search'),
+                TextColumn::make('subscriptions')
+                    ->label(static::t('columns.subscribers'))
+                    ->state(fn (array $record) => isset($record['subscriptions'])
+                        ? static::compactNumber((int) $record['subscriptions'])
+                        : '—')
+                    ->visible(fn () => $this->activeTab === 'search'),
+                TextColumn::make('time_updated')
+                    ->label(static::t('columns.updated'))
+                    ->state(fn (array $record) => isset($record['time_updated'])
+                        ? \Carbon\Carbon::createFromTimestamp($record['time_updated'])->diffForHumans()
+                        : '—')
+                    ->visible(fn () => $this->activeTab === 'search'),
             ])
+            ->filters([
+                SelectFilter::make('sort')
+                    ->label(static::t('filters.sort'))
+                    ->options([
+                        'trend' => static::t('filters.sort_trend'),
+                        'relevance' => static::t('filters.sort_relevance'),
+                        'newest' => static::t('filters.sort_newest'),
+                        'top' => static::t('filters.sort_top'),
+                        'subscribed' => static::t('filters.sort_subscribed'),
+                        'updated' => static::t('filters.sort_updated'),
+                    ])
+                    ->visible(fn () => $this->activeTab === 'search'),
+                SelectFilter::make('period')
+                    ->label(static::t('filters.period'))
+                    ->options([
+                        '1' => static::t('filters.period_day'),
+                        '7' => static::t('filters.period_week'),
+                        '30' => static::t('filters.period_month'),
+                        '365' => static::t('filters.period_year'),
+                    ])
+                    ->visible(fn () => $this->activeTab === 'search'),
+                SelectFilter::make('build')
+                    ->label(static::t('filters.build'))
+                    ->options([
+                        'Build 42' => 'Build 42',
+                        'Build 41' => 'Build 41',
+                    ])
+                    ->visible(fn () => $this->activeTab === 'search'),
+                SelectFilter::make('category')
+                    ->label(static::t('filters.category'))
+                    ->options(array_combine(self::PZ_TAGS, self::PZ_TAGS))
+                    ->searchable()
+                    ->visible(fn () => $this->activeTab === 'search'),
+            ], layout: FiltersLayout::AboveContent)
+            ->deferFilters(false)
             ->recordUrl(fn (array $record) => 'https://steamcommunity.com/sharedfiles/filedetails/?id='.$record['workshop_id'], true)
             ->recordActions([
                 // --- aba de busca ---
@@ -583,59 +652,6 @@ class ZomboidWorkshopPage extends Page implements HasTable
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('search_filters')
-                ->label(static::t('filters.button'))
-                ->icon('tabler-filter')
-                ->badge(fn () => count(array_filter([$this->searchSort, $this->searchPeriod, $this->searchBuild, $this->searchCategory])) ?: null)
-                ->visible(fn () => $this->activeTab === 'search')
-                ->schema([
-                    Select::make('sort')
-                        ->label(static::t('filters.sort'))
-                        ->options([
-                            'trend' => static::t('filters.sort_trend'),
-                            'relevance' => static::t('filters.sort_relevance'),
-                            'newest' => static::t('filters.sort_newest'),
-                            'top' => static::t('filters.sort_top'),
-                        ])
-                        ->placeholder('—'),
-                    Select::make('period')
-                        ->label(static::t('filters.period'))
-                        ->options([
-                            '1' => static::t('filters.period_day'),
-                            '7' => static::t('filters.period_week'),
-                            '30' => static::t('filters.period_month'),
-                            '365' => static::t('filters.period_year'),
-                        ])
-                        ->placeholder('—'),
-                    Select::make('build')
-                        ->label(static::t('filters.build'))
-                        ->options([
-                            'Build 42' => 'Build 42',
-                            'Build 41' => 'Build 41',
-                        ])
-                        ->placeholder('—'),
-                    Select::make('category')
-                        ->label(static::t('filters.category'))
-                        ->options(array_combine(self::PZ_TAGS, self::PZ_TAGS))
-                        ->searchable()
-                        ->placeholder('—'),
-                ])
-                ->fillForm(fn () => [
-                    'sort' => $this->searchSort,
-                    'period' => $this->searchPeriod,
-                    'build' => $this->searchBuild,
-                    'category' => $this->searchCategory,
-                ])
-                ->action(function (array $data) {
-                    $this->searchSort = $data['sort'] ?? null;
-                    $this->searchPeriod = $data['period'] ?? null;
-                    $this->searchBuild = $data['build'] ?? null;
-                    $this->searchCategory = $data['category'] ?? null;
-                    if (method_exists($this, 'resetPage')) {
-                        $this->resetPage();
-                    }
-                    $this->js('$wire.$refresh()');
-                }),
             Action::make('add_by_url')
                 ->label(static::t('actions.add_by_url'))
                 ->icon('tabler-link-plus')
