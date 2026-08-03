@@ -95,6 +95,13 @@ return [
         'test_hml_description' => 'Aktive Mods + :count Kandidat(en) werden auf ":server" angewendet, der jetzt neu startet. Der Hauptserver bleibt unberührt.',
     ],
 
+    'queue' => [
+        'hml_configured' => 'Test-Server: :server',
+        'hml_missing' => 'Kein Test-Server eingestellt — klicke oben auf den Kolben (⚗️), um einen zu wählen.',
+        'empty_heading' => 'Die Warteschlange ist leer',
+        'empty_description' => 'Jeder neue Mod landet zuerst hier. Füge einen über die Workshop-Suche hinzu und gib ihn nach dem Test frei.',
+    ],
+
     'notifications' => [
         'already_in_list' => 'Dieser Mod ist bereits in deiner Liste',
         'added' => 'Mod hinzugefügt',

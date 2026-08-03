@@ -95,6 +95,13 @@ return [
         'test_hml_description' => 'Los mods activos + :count candidato(s) se aplicarán en ":server", que se reiniciará ahora. El servidor principal no se ve afectado.',
     ],
 
+    'queue' => [
+        'hml_configured' => 'Servidor de pruebas: :server',
+        'hml_missing' => 'No hay servidor de pruebas configurado — pulsa el matraz (⚗️) arriba para elegir uno.',
+        'empty_heading' => 'La cola está vacía',
+        'empty_description' => 'Todo mod nuevo entra aquí primero. Añade uno desde la búsqueda de la workshop y apruébalo cuando esté probado.',
+    ],
+
     'notifications' => [
         'already_in_list' => 'Ese mod ya está en tu lista',
         'added' => 'Mod añadido',

@@ -95,6 +95,13 @@ return [
         'test_hml_description' => '正式模组 + :count 个候选将应用到“:server”，该服务器将立即重启。主服务器不受影响。',
     ],
 
+    'queue' => [
+        'hml_configured' => '测试服务器：:server',
+        'hml_missing' => '尚未配置测试服务器——点击上方的烧瓶（⚗️）选择一个。',
+        'empty_heading' => '队列是空的',
+        'empty_description' => '新模组会先进入这里。从创意工坊搜索标签页添加，测试通过后再批准。',
+    ],
+
     'notifications' => [
         'already_in_list' => '该模组已在你的列表中',
         'added' => '模组已添加',

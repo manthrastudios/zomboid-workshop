@@ -95,6 +95,13 @@ return [
         'test_hml_description' => '有効なMod + 候補:count件が「:server」に適用され、今すぐ再起動します。メインサーバーには影響しません。',
     ],
 
+    'queue' => [
+        'hml_configured' => 'テストサーバー: :server',
+        'hml_missing' => 'テストサーバーが未設定です。上のフラスコ（⚗️）から選んでください。',
+        'empty_heading' => 'キューは空です',
+        'empty_description' => '新しいModはまずここに入ります。ワークショップ検索タブから追加し、テスト後に承認してください。',
+    ],
+
     'notifications' => [
         'already_in_list' => 'このMODはすでにリストにあります',
         'added' => 'MODを追加しました',

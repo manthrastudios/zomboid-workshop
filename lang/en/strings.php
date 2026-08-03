@@ -95,6 +95,13 @@ return [
         'test_hml_description' => 'Active mods + :count candidate(s) will be applied to ":server", which will restart now. The main server is not affected.',
     ],
 
+    'queue' => [
+        'hml_configured' => 'Staging server: :server',
+        'hml_missing' => 'No staging server configured — click the flask (⚗️) up top to pick one.',
+        'empty_heading' => 'The queue is empty',
+        'empty_description' => 'Every new mod lands here first. Add one from the "Browse workshop" tab and approve it once it\'s tested.',
+    ],
+
     'notifications' => [
         'already_in_list' => 'That mod is already in your list',
         'added' => 'Mod added',

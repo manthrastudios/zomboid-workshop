@@ -195,6 +195,34 @@ class ZomboidWorkshopPage extends Page implements HasTable
         return $server;
     }
 
+    /** Ação de escolher o servidor de testes — usada no cabeçalho e no estado vazio da fila. */
+    protected function configureHmlAction(string $name): Action
+    {
+        return Action::make($name)
+            ->label(static::t('actions.configure_hml'))
+            ->icon('tabler-flask-2')
+            ->schema([
+                Select::make('hml_server_id')
+                    ->label(static::t('forms.hml_server_label'))
+                    ->helperText(static::t('forms.hml_server_help'))
+                    ->options(fn () => $this->hmlServerOptions())
+                    ->placeholder('—'),
+            ])
+            ->fillForm(fn () => [
+                'hml_server_id' => $this->getData()['homologation']['hml_server_id'] ?? null,
+            ])
+            ->action(function (array $data) {
+                $listData = $this->getData();
+                $listData['homologation']['hml_server_id'] = $data['hml_server_id'] ? (int) $data['hml_server_id'] : null;
+                $this->saveData($listData);
+
+                Notification::make()
+                    ->title(static::t($data['hml_server_id'] ? 'notifications.hml_saved' : 'notifications.hml_cleared'))
+                    ->success()
+                    ->send();
+            });
+    }
+
     /** @return array<int, string> Servers zomboid que podem servir de HML (menos o atual). */
     protected function hmlServerOptions(): array
     {
@@ -430,6 +458,13 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     ->searchable(),
             ], layout: FiltersLayout::AboveContent)
             ->deferFilters(false)
+            ->emptyStateHeading(fn () => $this->activeTab === 'candidates' ? static::t('queue.empty_heading') : null)
+            ->emptyStateDescription(fn () => $this->activeTab === 'candidates' ? static::t('queue.empty_description') : null)
+            ->emptyStateActions([
+                $this->configureHmlAction('configure_hml_empty')
+                    ->button()
+                    ->visible(fn () => $this->activeTab === 'candidates' && $this->hmlServer() === null),
+            ])
             ->recordUrl(fn (array $record) => 'https://steamcommunity.com/sharedfiles/filedetails/?id='.$record['workshop_id'], true)
             ->recordActions([
                 // --- aba de busca ---
@@ -813,30 +848,8 @@ class ZomboidWorkshopPage extends Page implements HasTable
                             ->send();
                     }
                 }),
-            Action::make('configure_hml')
-                ->label(static::t('actions.configure_hml'))
-                ->icon('tabler-flask-2')
-                ->visible(fn () => $this->activeTab === 'candidates')
-                ->schema([
-                    Select::make('hml_server_id')
-                        ->label(static::t('forms.hml_server_label'))
-                        ->helperText(static::t('forms.hml_server_help'))
-                        ->options(fn () => $this->hmlServerOptions())
-                        ->placeholder('—'),
-                ])
-                ->fillForm(fn () => [
-                    'hml_server_id' => $this->getData()['homologation']['hml_server_id'] ?? null,
-                ])
-                ->action(function (array $data) {
-                    $listData = $this->getData();
-                    $listData['homologation']['hml_server_id'] = $data['hml_server_id'] ? (int) $data['hml_server_id'] : null;
-                    $this->saveData($listData);
-
-                    Notification::make()
-                        ->title(static::t($data['hml_server_id'] ? 'notifications.hml_saved' : 'notifications.hml_cleared'))
-                        ->success()
-                        ->send();
-                }),
+            $this->configureHmlAction('configure_hml')
+                ->visible(fn () => $this->activeTab === 'candidates'),
             Action::make('test_hml')
                 ->label(static::t('actions.test_hml'))
                 ->icon('tabler-flask')
@@ -1000,6 +1013,14 @@ class ZomboidWorkshopPage extends Page implements HasTable
                             ->size(TextSize::Large),
                     ]),
                 $this->getTabsContentComponent(),
+                TextEntry::make('hml_status')
+                    ->hiddenLabel()
+                    ->badge()
+                    ->state(fn () => $this->hmlServer() !== null
+                        ? static::t('queue.hml_configured', ['server' => $this->hmlServer()->name])
+                        : static::t('queue.hml_missing'))
+                    ->color(fn () => $this->hmlServer() !== null ? 'success' : 'warning')
+                    ->visible(fn () => $this->activeTab === 'candidates'),
                 EmbeddedTable::make(),
             ]);
     }
