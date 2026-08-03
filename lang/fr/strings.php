@@ -7,12 +7,14 @@ return [
     'tabs' => [
         'mods' => 'Mes mods',
         'search' => 'Parcourir le workshop',
+        'candidates' => 'Candidats',
     ],
 
     'badges' => [
         'total' => 'Dans la liste',
         'active' => 'Actifs',
         'loose' => 'Mod IDs orphelins',
+        'candidates' => 'Candidats',
     ],
 
     'columns' => [
@@ -33,6 +35,7 @@ return [
         'remove' => 'Retirer de la liste',
         'add' => 'Ajouter',
         'in_list' => 'Dans votre liste',
+        'approve' => 'Approuver (passe dans la liste active)',
     ],
 
     'actions' => [
@@ -41,6 +44,8 @@ return [
         'import_ini' => 'Importer la configuration actuelle',
         'apply' => 'Enregistrer sur le serveur',
         'restart' => 'Redémarrer le serveur',
+        'configure_hml' => 'Configurer le serveur de test',
+        'test_hml' => 'Tester sur le serveur de test',
     ],
 
     'forms' => [
@@ -49,6 +54,8 @@ return [
         'selected_label' => 'Mod IDs détectés (les cochés seront chargés)',
         'manual_label' => 'Ajouter des Mod IDs manuellement',
         'manual_placeholder' => 'saisissez puis appuyez sur Entrée',
+        'hml_server_label' => 'Serveur de test',
+        'hml_server_help' => 'Les nouveaux mods arrivent comme candidats et sont testés sur ce serveur avant de passer sur le principal.',
     ],
 
     'filters' => [
@@ -76,6 +83,10 @@ return [
         'apply_description' => ':enabled mods actifs (sur :total dans la liste) seront écrits dans la configuration du serveur. Les changements prennent effet au prochain redémarrage.',
         'restart_heading' => 'Redémarrer le serveur ?',
         'restart_description' => 'Les joueurs connectés seront déconnectés. Un serveur moddé met quelques minutes à revenir.',
+        'approve_heading' => 'Approuver le mod',
+        'approve_description' => 'Approuver « :title » ? Il quitte les candidats et rejoint la liste active — il s\'appliquera au serveur principal au prochain enregistrement de la liste.',
+        'test_hml_heading' => 'Tester les candidats sur le serveur de test ?',
+        'test_hml_description' => 'Les mods actifs + :count candidat(s) seront appliqués sur « :server », qui va redémarrer maintenant. Le serveur principal n\'est pas affecté.',
     ],
 
     'notifications' => [
@@ -105,6 +116,16 @@ return [
         'search_needs_key' => 'La recherche dans le panneau nécessite une clé Steam API. Un administrateur peut la configurer dans Admin → Plugins → Zomboid Workshop Mods.',
         'restart_sent' => 'Redémarrage… le serveur revient dans quelques minutes',
         'restart_failed' => 'Impossible de redémarrer le serveur',
+        'added_candidate' => 'Candidat ajouté',
+        'added_candidate_body' => ':title a rejoint l\'onglet Candidats — testez-le sur le serveur de test et approuvez-le quand tout est bon.',
+        'approved' => 'Mod approuvé !',
+        'approved_body' => ':title fait maintenant partie de la liste active.',
+        'hml_saved' => 'Serveur de test configuré',
+        'hml_cleared' => 'Homologation désactivée — les nouveaux mods entrent à nouveau directement dans la liste',
+        'test_sent' => 'Test envoyé à :server',
+        'test_sent_body' => ':count candidat(s) appliqués. Le serveur de test redémarre — suivez le démarrage dans sa console.',
+        'test_failed' => 'Impossible d\'appliquer le test',
+        'no_candidates' => 'Aucun candidat à tester',
     ],
 
     'settings' => [

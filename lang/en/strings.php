@@ -7,12 +7,14 @@ return [
     'tabs' => [
         'mods' => 'My mods',
         'search' => 'Browse workshop',
+        'candidates' => 'Candidates',
     ],
 
     'badges' => [
         'total' => 'In the list',
         'active' => 'Active',
         'loose' => 'Unmatched mod IDs',
+        'candidates' => 'Candidates',
     ],
 
     'columns' => [
@@ -33,6 +35,7 @@ return [
         'remove' => 'Remove from list',
         'add' => 'Add',
         'in_list' => 'In your list',
+        'approve' => 'Approve (move to active list)',
     ],
 
     'actions' => [
@@ -41,6 +44,8 @@ return [
         'import_ini' => 'Import current setup',
         'apply' => 'Save to server',
         'restart' => 'Restart server',
+        'configure_hml' => 'Staging settings',
+        'test_hml' => 'Test on staging',
     ],
 
     'forms' => [
@@ -49,6 +54,8 @@ return [
         'selected_label' => 'Detected mod IDs (checked ones will be loaded)',
         'manual_label' => 'Add mod IDs manually',
         'manual_placeholder' => 'type and press Enter',
+        'hml_server_label' => 'Staging server',
+        'hml_server_help' => 'New mods are added as candidates and tested on this server before going live.',
     ],
 
     'filters' => [
@@ -76,6 +83,10 @@ return [
         'apply_description' => ':enabled active mods (of :total in your list) will be written to the server configuration. Changes take effect the next time the server restarts.',
         'restart_heading' => 'Restart the server?',
         'restart_description' => 'Anyone playing right now will be disconnected. A modded server takes a few minutes to come back up.',
+        'approve_heading' => 'Approve mod',
+        'approve_description' => 'Approve ":title"? It leaves the candidates and joins the active list — it goes live on the main server next time the list is saved.',
+        'test_hml_heading' => 'Test candidates on the staging server?',
+        'test_hml_description' => 'Active mods + :count candidate(s) will be applied to ":server", which will restart now. The main server is not affected.',
     ],
 
     'notifications' => [
@@ -105,6 +116,16 @@ return [
         'search_needs_key' => 'In-panel search needs a Steam API key. An administrator can set it up in Admin → Plugins → Zomboid Workshop Mods.',
         'restart_sent' => 'Restarting… the server will be back in a few minutes',
         'restart_failed' => 'Couldn\'t restart the server',
+        'added_candidate' => 'Candidate added',
+        'added_candidate_body' => ':title joined the Candidates tab — test it on the staging server and approve it when it looks good.',
+        'approved' => 'Mod approved!',
+        'approved_body' => ':title is now part of the active list.',
+        'hml_saved' => 'Staging server configured',
+        'hml_cleared' => 'Staging disabled — new mods go straight to the list again',
+        'test_sent' => 'Test sent to :server',
+        'test_sent_body' => ':count candidate(s) applied. The staging server is restarting — watch its console for the boot.',
+        'test_failed' => 'Couldn\'t apply the test',
+        'no_candidates' => 'No candidates to test',
     ],
 
     'settings' => [

@@ -7,12 +7,14 @@ return [
     'tabs' => [
         'mods' => 'マイMOD',
         'search' => 'ワークショップを探す',
+        'candidates' => '候補',
     ],
 
     'badges' => [
         'total' => 'リスト内',
         'active' => '有効',
         'loose' => '未対応のMod ID',
+        'candidates' => '候補',
     ],
 
     'columns' => [
@@ -33,6 +35,7 @@ return [
         'remove' => 'リストから削除',
         'add' => '追加',
         'in_list' => 'リストにあります',
+        'approve' => '承認（本番リストへ）',
     ],
 
     'actions' => [
@@ -41,6 +44,8 @@ return [
         'import_ini' => '現在の設定をインポート',
         'apply' => 'サーバーに保存',
         'restart' => 'サーバーを再起動',
+        'configure_hml' => 'テストサーバー設定',
+        'test_hml' => 'テストサーバーで試す',
     ],
 
     'forms' => [
@@ -49,6 +54,8 @@ return [
         'selected_label' => '検出されたMod ID（チェックしたものが読み込まれます）',
         'manual_label' => 'Mod IDを手動で追加',
         'manual_placeholder' => '入力してEnterキーを押す',
+        'hml_server_label' => 'テストサーバー',
+        'hml_server_help' => '新しいModは候補として追加され、本番に入る前にこのサーバーでテストされます。',
     ],
 
     'filters' => [
@@ -76,6 +83,10 @@ return [
         'apply_description' => '有効な:enabled個のMOD（リスト内:total個中）がサーバー設定に書き込まれます。変更は次回の再起動時に反映されます。',
         'restart_heading' => 'サーバーを再起動しますか？',
         'restart_description' => 'プレイ中のプレイヤーは切断されます。MODありのサーバーは復帰まで数分かかります。',
+        'approve_heading' => 'Modを承認',
+        'approve_description' => '「:title」を承認しますか？候補から本番リストに移り、次にリストを保存したときにメインサーバーへ反映されます。',
+        'test_hml_heading' => '候補をテストサーバーで試しますか？',
+        'test_hml_description' => '有効なMod + 候補:count件が「:server」に適用され、今すぐ再起動します。メインサーバーには影響しません。',
     ],
 
     'notifications' => [
@@ -105,6 +116,16 @@ return [
         'search_needs_key' => 'パネル内検索にはSteam APIキーが必要です。管理者が Admin → Plugins → Zomboid Workshop Mods で設定できます。',
         'restart_sent' => '再起動中… サーバーは数分で戻ります',
         'restart_failed' => 'サーバーを再起動できませんでした',
+        'added_candidate' => '候補を追加しました',
+        'added_candidate_body' => ':title は「候補」タブに入りました。テストサーバーで試して、問題なければ承認してください。',
+        'approved' => 'Modを承認しました！',
+        'approved_body' => ':title は本番リストに入りました。',
+        'hml_saved' => 'テストサーバーを設定しました',
+        'hml_cleared' => 'テスト運用をオフにしました — 新しいModは再び直接リストに入ります',
+        'test_sent' => ':server にテストを送信しました',
+        'test_sent_body' => '候補:count件を適用しました。テストサーバーは再起動中です。起動の様子はコンソールで確認できます。',
+        'test_failed' => 'テストを適用できませんでした',
+        'no_candidates' => 'テストする候補がありません',
     ],
 
     'settings' => [

@@ -7,12 +7,14 @@ return [
     'tabs' => [
         'mods' => 'Meine Mods',
         'search' => 'Workshop durchsuchen',
+        'candidates' => 'Kandidaten',
     ],
 
     'badges' => [
         'total' => 'In der Liste',
         'active' => 'Aktiv',
         'loose' => 'Lose Mod-IDs',
+        'candidates' => 'Kandidaten',
     ],
 
     'columns' => [
@@ -33,6 +35,7 @@ return [
         'remove' => 'Aus der Liste entfernen',
         'add' => 'Hinzufügen',
         'in_list' => 'In deiner Liste',
+        'approve' => 'Freigeben (in die aktive Liste)',
     ],
 
     'actions' => [
@@ -41,6 +44,8 @@ return [
         'import_ini' => 'Aktuelle Konfiguration importieren',
         'apply' => 'Auf dem Server speichern',
         'restart' => 'Server neu starten',
+        'configure_hml' => 'Test-Server einstellen',
+        'test_hml' => 'Auf Test-Server ausprobieren',
     ],
 
     'forms' => [
@@ -49,6 +54,8 @@ return [
         'selected_label' => 'Erkannte Mod-IDs (angehakte werden geladen)',
         'manual_label' => 'Mod-IDs manuell hinzufügen',
         'manual_placeholder' => 'eingeben und Enter drücken',
+        'hml_server_label' => 'Test-Server',
+        'hml_server_help' => 'Neue Mods kommen als Kandidaten dazu und werden erst auf diesem Server getestet, bevor sie live gehen.',
     ],
 
     'filters' => [
@@ -76,6 +83,10 @@ return [
         'apply_description' => ':enabled aktive Mods (von :total in der Liste) werden in die Serverkonfiguration geschrieben. Die Änderungen gelten ab dem nächsten Neustart.',
         'restart_heading' => 'Server neu starten?',
         'restart_description' => 'Alle aktuellen Spieler werden getrennt. Ein Server mit Mods braucht ein paar Minuten, bis er wieder da ist.',
+        'approve_heading' => 'Mod freigeben',
+        'approve_description' => '":title" freigeben? Er verlässt die Kandidaten und kommt in die aktive Liste — live geht er beim nächsten Speichern der Liste.',
+        'test_hml_heading' => 'Kandidaten auf dem Test-Server ausprobieren?',
+        'test_hml_description' => 'Aktive Mods + :count Kandidat(en) werden auf ":server" angewendet, der jetzt neu startet. Der Hauptserver bleibt unberührt.',
     ],
 
     'notifications' => [
@@ -105,6 +116,16 @@ return [
         'search_needs_key' => 'Die Suche im Panel benötigt einen Steam-API-Schlüssel. Ein Administrator kann ihn unter Admin → Plugins → Zomboid Workshop Mods einrichten.',
         'restart_sent' => 'Neustart läuft… der Server ist in wenigen Minuten zurück',
         'restart_failed' => 'Server konnte nicht neu gestartet werden',
+        'added_candidate' => 'Kandidat hinzugefügt',
+        'added_candidate_body' => ':title ist jetzt im Tab Kandidaten — teste ihn auf dem Test-Server und gib ihn frei, wenn alles passt.',
+        'approved' => 'Mod freigegeben!',
+        'approved_body' => ':title gehört jetzt zur aktiven Liste.',
+        'hml_saved' => 'Test-Server eingestellt',
+        'hml_cleared' => 'Test-Phase abgeschaltet — neue Mods kommen wieder direkt in die Liste',
+        'test_sent' => 'Test an :server geschickt',
+        'test_sent_body' => ':count Kandidat(en) angewendet. Der Test-Server startet gerade neu — verfolge den Start in seiner Konsole.',
+        'test_failed' => 'Test konnte nicht angewendet werden',
+        'no_candidates' => 'Keine Kandidaten zum Testen',
     ],
 
     'settings' => [

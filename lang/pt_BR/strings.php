@@ -7,12 +7,14 @@ return [
     'tabs' => [
         'mods' => 'Meus mods',
         'search' => 'Buscar na workshop',
+        'candidates' => 'Candidatos',
     ],
 
     'badges' => [
         'total' => 'Na lista',
         'active' => 'Ativos',
         'loose' => 'Mod IDs avulsos',
+        'candidates' => 'Candidatos',
     ],
 
     'columns' => [
@@ -33,6 +35,7 @@ return [
         'remove' => 'Remover da lista',
         'add' => 'Adicionar',
         'in_list' => 'Na sua lista',
+        'approve' => 'Aprovar (vai pra lista ativa)',
     ],
 
     'actions' => [
@@ -41,6 +44,8 @@ return [
         'import_ini' => 'Importar configuração atual',
         'apply' => 'Salvar no servidor',
         'restart' => 'Reiniciar servidor',
+        'configure_hml' => 'Configurar homologação',
+        'test_hml' => 'Testar no HML',
     ],
 
     'forms' => [
@@ -49,6 +54,8 @@ return [
         'selected_label' => 'Mod IDs detectados (os marcados serão carregados)',
         'manual_label' => 'Adicionar Mod IDs manualmente',
         'manual_placeholder' => 'digite e aperte Enter',
+        'hml_server_label' => 'Servidor de testes',
+        'hml_server_help' => 'Mods novos entram como candidatos e são testados nesse servidor antes de irem pro principal.',
     ],
 
     'filters' => [
@@ -76,6 +83,10 @@ return [
         'apply_description' => ':enabled mods ativos (de :total na lista) serão gravados na configuração do servidor. As mudanças entram em vigor na próxima reinicialização.',
         'restart_heading' => 'Reiniciar o servidor?',
         'restart_description' => 'Quem estiver jogando agora vai ser desconectado. Um servidor com mods leva alguns minutos pra voltar.',
+        'approve_heading' => 'Aprovar mod',
+        'approve_description' => 'Aprovar ":title"? Ele sai dos candidatos e entra na lista ativa — passa a valer no servidor principal na próxima vez que a lista for salva.',
+        'test_hml_heading' => 'Testar candidatos no servidor de testes?',
+        'test_hml_description' => 'Os mods ativos + :count candidato(s) serão aplicados em ":server", que vai reiniciar agora. O servidor principal não é afetado.',
     ],
 
     'notifications' => [
@@ -105,6 +116,16 @@ return [
         'search_needs_key' => 'A busca no painel precisa de uma chave da Steam API. Um administrador pode configurar em Admin → Plugins → Zomboid Workshop Mods.',
         'restart_sent' => 'Reiniciando… o servidor volta em alguns minutos',
         'restart_failed' => 'Não consegui reiniciar o servidor',
+        'added_candidate' => 'Candidato adicionado',
+        'added_candidate_body' => ':title entrou na aba Candidatos — teste no servidor de testes e aprove quando estiver ok.',
+        'approved' => 'Mod aprovado!',
+        'approved_body' => ':title agora faz parte da lista ativa.',
+        'hml_saved' => 'Servidor de testes configurado',
+        'hml_cleared' => 'Homologação desligada — mods novos voltam a entrar direto na lista',
+        'test_sent' => 'Teste enviado pra :server',
+        'test_sent_body' => ':count candidato(s) aplicados. O servidor de testes está reiniciando — acompanhe o boot pelo console dele.',
+        'test_failed' => 'Não consegui aplicar o teste',
+        'no_candidates' => 'Nenhum candidato pra testar',
     ],
 
     'settings' => [

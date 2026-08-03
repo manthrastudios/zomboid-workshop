@@ -7,12 +7,14 @@ return [
     'tabs' => [
         'mods' => '我的模组',
         'search' => '浏览创意工坊',
+        'candidates' => '候选',
     ],
 
     'badges' => [
         'total' => '列表中',
         'active' => '已启用',
         'loose' => '未匹配的Mod ID',
+        'candidates' => '候选',
     ],
 
     'columns' => [
@@ -33,6 +35,7 @@ return [
         'remove' => '从列表移除',
         'add' => '添加',
         'in_list' => '已在列表中',
+        'approve' => '批准（进入正式列表）',
     ],
 
     'actions' => [
@@ -41,6 +44,8 @@ return [
         'import_ini' => '导入当前配置',
         'apply' => '保存到服务器',
         'restart' => '重启服务器',
+        'configure_hml' => '配置测试服务器',
+        'test_hml' => '在测试服务器上试用',
     ],
 
     'forms' => [
@@ -49,6 +54,8 @@ return [
         'selected_label' => '检测到的Mod ID（勾选的将被加载）',
         'manual_label' => '手动添加Mod ID',
         'manual_placeholder' => '输入后按回车',
+        'hml_server_label' => '测试服务器',
+        'hml_server_help' => '新模组会先作为候选加入，在该服务器上测试通过后才会上线。',
     ],
 
     'filters' => [
@@ -76,6 +83,10 @@ return [
         'apply_description' => '将把:enabled个已启用的模组（列表共:total个）写入服务器配置。更改将在下次重启后生效。',
         'restart_heading' => '重启服务器？',
         'restart_description' => '当前在线的玩家将被断开连接。带模组的服务器需要几分钟才能恢复。',
+        'approve_heading' => '批准模组',
+        'approve_description' => '批准“:title”吗？它将离开候选、加入正式列表——下次保存列表时应用到主服务器。',
+        'test_hml_heading' => '在测试服务器上试用候选模组？',
+        'test_hml_description' => '正式模组 + :count 个候选将应用到“:server”，该服务器将立即重启。主服务器不受影响。',
     ],
 
     'notifications' => [
@@ -105,6 +116,16 @@ return [
         'search_needs_key' => '面板内搜索需要Steam API密钥。管理员可在 Admin → Plugins → Zomboid Workshop Mods 中配置。',
         'restart_sent' => '正在重启……服务器几分钟后恢复',
         'restart_failed' => '无法重启服务器',
+        'added_candidate' => '已添加候选',
+        'added_candidate_body' => ':title 已进入“候选”标签页——在测试服务器上试用，确认没问题后再批准。',
+        'approved' => '模组已批准！',
+        'approved_body' => ':title 已加入正式列表。',
+        'hml_saved' => '测试服务器已配置',
+        'hml_cleared' => '已关闭测试流程——新模组将再次直接加入列表',
+        'test_sent' => '测试已发送到 :server',
+        'test_sent_body' => '已应用 :count 个候选。测试服务器正在重启——可在其控制台查看启动情况。',
+        'test_failed' => '无法应用测试',
+        'no_candidates' => '没有可测试的候选',
     ],
 
     'settings' => [

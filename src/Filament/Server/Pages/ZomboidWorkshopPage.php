@@ -98,6 +98,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
     {
         return [
             'mods' => Tab::make(static::t('tabs.mods')),
+            'candidates' => Tab::make(static::t('tabs.candidates')),
             'search' => Tab::make(static::t('tabs.search')),
         ];
     }
@@ -151,6 +152,54 @@ class ZomboidWorkshopPage extends Page implements HasTable
         return null;
     }
 
+    // ------------------------------------------------------------------
+    // Homologação (candidatos + servidor de teste)
+    // ------------------------------------------------------------------
+
+    protected static function isCandidate(array $entry): bool
+    {
+        return ($entry['status'] ?? null) === 'candidate';
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    protected function candidates(): array
+    {
+        return array_values(array_filter($this->getData()['mods'], fn ($entry) => static::isCandidate($entry)));
+    }
+
+    protected function homologationEnabled(): bool
+    {
+        return !empty($this->getData()['homologation']['hml_server_id']);
+    }
+
+    /** O servidor de homologação configurado, se existir e o usuário puder mexer nele. */
+    protected function hmlServer(): ?Server
+    {
+        $id = $this->getData()['homologation']['hml_server_id'] ?? null;
+        if (!$id) {
+            return null;
+        }
+
+        $server = Server::find($id);
+        if (!$server || !static::isZomboidServer($server) || !auth()->user()?->can('update', $server)) {
+            return null;
+        }
+
+        return $server;
+    }
+
+    /** @return array<int, string> Servers zomboid que podem servir de HML (menos o atual). */
+    protected function hmlServerOptions(): array
+    {
+        /** @var Server $current */
+        $current = Filament::getTenant();
+
+        return Server::query()->where('id', '!=', $current->id)->get()
+            ->filter(fn (Server $server) => static::isZomboidServer($server) && auth()->user()?->can('update', $server))
+            ->mapWithKeys(fn (Server $server) => [$server->id => $server->name])
+            ->all();
+    }
+
     /**
      * Adiciona um item da workshop à lista (detalhes + detecção de Mod IDs).
      *
@@ -186,8 +235,11 @@ class ZomboidWorkshopPage extends Page implements HasTable
             $modIds = array_values(array_unique(array_merge($diskIds, $modIds)));
         }
 
-        $data = $this->getData();
-        $data['mods'][] = [
+        // Com homologação configurada, mod novo entra como candidato — só
+        // chega na lista ativa depois de aprovado.
+        $asCandidate = $this->homologationEnabled();
+
+        $entry = [
             'workshop_id' => $workshopId,
             'title' => $item['title'] ?? "Item $workshopId",
             'preview_url' => $item['preview_url'] ?? null,
@@ -195,10 +247,22 @@ class ZomboidWorkshopPage extends Page implements HasTable
             'selected_mod_ids' => $modIds,
             'enabled' => true,
         ];
+        if ($asCandidate) {
+            $entry['status'] = 'candidate';
+        }
+
+        $data = $this->getData();
+        $data['mods'][] = $entry;
         $this->saveData($data);
 
         if ($notify) {
-            if (empty($modIds)) {
+            if ($asCandidate && !empty($modIds)) {
+                Notification::make()
+                    ->title(static::t('notifications.added_candidate'))
+                    ->body(static::t('notifications.added_candidate_body', ['title' => $entry['title']]))
+                    ->success()
+                    ->send();
+            } elseif (empty($modIds)) {
                 Notification::make()
                     ->title(static::t('notifications.added_no_ids'))
                     ->body(static::t('notifications.added_no_ids_body', ['rescan' => static::t('row.rescan')]))
@@ -263,7 +327,11 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     }
                 }
 
-                $mods = $this->getData()['mods'];
+                $wantCandidates = $this->activeTab === 'candidates';
+                $mods = array_values(array_filter(
+                    $this->getData()['mods'],
+                    fn ($entry) => static::isCandidate($entry) === $wantCandidates
+                ));
 
                 foreach ($mods as $index => $entry) {
                     $mods[$index]['position'] = $index;
@@ -306,7 +374,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                 IconColumn::make('enabled')
                     ->label(static::t('columns.active'))
                     ->boolean()
-                    ->visible(fn () => $this->activeTab !== 'search'),
+                    ->visible(fn () => $this->activeTab === 'mods'),
             ])
             ->recordUrl(fn (array $record) => 'https://steamcommunity.com/sharedfiles/filedetails/?id='.$record['workshop_id'], true)
             ->recordActions([
@@ -325,13 +393,42 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     ->disabled()
                     ->visible(fn (array $record) => $this->activeTab === 'search' && $this->findIndex((string) $record['workshop_id']) !== null),
 
+                // --- aba candidatos ---
+                Action::make('approve')
+                    ->iconButton()
+                    ->icon('tabler-rosette-discount-check')
+                    ->color('success')
+                    ->tooltip(static::t('row.approve'))
+                    ->visible(fn () => $this->activeTab === 'candidates')
+                    ->requiresConfirmation()
+                    ->modalHeading(static::t('modals.approve_heading'))
+                    ->modalDescription(fn (array $record) => static::t('modals.approve_description', ['title' => $record['title']]))
+                    ->action(function (array $record) {
+                        $data = $this->getData();
+                        $index = $this->findIndex((string) $record['workshop_id']);
+                        if ($index === null) {
+                            return;
+                        }
+
+                        unset($data['mods'][$index]['status']);
+                        $data['mods'][$index]['enabled'] = true;
+                        $data['mods'][$index]['approved_at'] = now()->toIso8601String();
+                        $this->saveData($data);
+
+                        Notification::make()
+                            ->title(static::t('notifications.approved'))
+                            ->body(static::t('notifications.approved_body', ['title' => $record['title']]))
+                            ->success()
+                            ->send();
+                    }),
+
                 // --- aba meus mods ---
                 Action::make('toggle')
                     ->iconButton()
                     ->icon(fn (array $record) => empty($record['enabled']) ? 'tabler-toggle-left' : 'tabler-toggle-right')
                     ->color(fn (array $record) => empty($record['enabled']) ? 'gray' : 'success')
                     ->tooltip(fn (array $record) => empty($record['enabled']) ? static::t('row.enable') : static::t('row.disable'))
-                    ->visible(fn () => $this->activeTab !== 'search')
+                    ->visible(fn () => $this->activeTab === 'mods')
                     ->action(function (array $record) {
                         $data = $this->getData();
                         $index = $this->findIndex((string) $record['workshop_id']);
@@ -354,7 +451,13 @@ class ZomboidWorkshopPage extends Page implements HasTable
                     ->icon('tabler-arrow-down')
                     ->tooltip(static::t('row.move_down'))
                     ->visible(fn () => $this->activeTab !== 'search')
-                    ->disabled(fn (array $record) => ($record['position'] ?? 0) >= count($this->getData()['mods']) - 1)
+                    ->disabled(function (array $record) {
+                        $sameTab = $this->activeTab === 'candidates'
+                            ? count($this->candidates())
+                            : count($this->getData()['mods']) - count($this->candidates());
+
+                        return ($record['position'] ?? 0) >= $sameTab - 1;
+                    })
                     ->action(fn (array $record) => $this->move((string) $record['workshop_id'], 1)),
                 Action::make('edit_mod_ids')
                     ->iconButton()
@@ -451,9 +554,21 @@ class ZomboidWorkshopPage extends Page implements HasTable
     {
         $data = $this->getData();
         $index = $this->findIndex($workshopId);
-        $target = $index + $delta;
 
-        if ($index === null || $target < 0 || $target >= count($data['mods'])) {
+        if ($index === null) {
+            return;
+        }
+
+        // troca com o vizinho da MESMA aba (ativos e candidatos convivem no
+        // mesmo array, então o vizinho imediato pode ser de outro status)
+        $isCandidate = static::isCandidate($data['mods'][$index]);
+        $target = $index + $delta;
+        while ($target >= 0 && $target < count($data['mods'])
+            && static::isCandidate($data['mods'][$target]) !== $isCandidate) {
+            $target += $delta;
+        }
+
+        if ($target < 0 || $target >= count($data['mods'])) {
             return;
         }
 
@@ -659,6 +774,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
 
                             $entry['selected_mod_ids'] = $selected;
                             $entry['enabled'] = true;
+                            unset($entry['status']); // está no ini → é ativo por definição
                             $mods[] = $entry;
                         }
 
@@ -679,7 +795,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
                             fn ($id) => !isset($claimed[strtolower($id)])
                         )));
 
-                        $this->saveData(['mods' => $mods, 'extra_mod_ids' => $extras]);
+                        $this->saveData(array_merge($this->getData(), ['mods' => $mods, 'extra_mod_ids' => $extras]));
 
                         $extraNote = empty($extras) ? '' : static::t('notifications.ini_imported_extras', ['count' => count($extras)]);
                         $offNote = $disabled === 0 ? '' : static::t('notifications.ini_imported_disabled', ['count' => $disabled]);
@@ -696,15 +812,104 @@ class ZomboidWorkshopPage extends Page implements HasTable
                             ->send();
                     }
                 }),
+            Action::make('configure_hml')
+                ->label(static::t('actions.configure_hml'))
+                ->icon('tabler-flask-2')
+                ->visible(fn () => $this->activeTab === 'candidates')
+                ->schema([
+                    Select::make('hml_server_id')
+                        ->label(static::t('forms.hml_server_label'))
+                        ->helperText(static::t('forms.hml_server_help'))
+                        ->options(fn () => $this->hmlServerOptions())
+                        ->placeholder('—'),
+                ])
+                ->fillForm(fn () => [
+                    'hml_server_id' => $this->getData()['homologation']['hml_server_id'] ?? null,
+                ])
+                ->action(function (array $data) {
+                    $listData = $this->getData();
+                    $listData['homologation']['hml_server_id'] = $data['hml_server_id'] ? (int) $data['hml_server_id'] : null;
+                    $this->saveData($listData);
+
+                    Notification::make()
+                        ->title(static::t($data['hml_server_id'] ? 'notifications.hml_saved' : 'notifications.hml_cleared'))
+                        ->success()
+                        ->send();
+                }),
+            Action::make('test_hml')
+                ->label(static::t('actions.test_hml'))
+                ->icon('tabler-flask')
+                ->color('warning')
+                ->visible(fn () => $this->activeTab === 'candidates' && $this->hmlServer() !== null)
+                ->requiresConfirmation()
+                ->modalHeading(static::t('modals.test_hml_heading'))
+                ->modalDescription(fn () => static::t('modals.test_hml_description', [
+                    'count' => count($this->candidates()),
+                    'server' => $this->hmlServer()?->name ?? '?',
+                ]))
+                ->action(function (DaemonServerRepository $serverRepository) {
+                    $hml = $this->hmlServer();
+                    $candidates = $this->candidates();
+
+                    if ($hml === null) {
+                        return;
+                    }
+
+                    if (empty($candidates)) {
+                        Notification::make()->title(static::t('notifications.no_candidates'))->warning()->send();
+
+                        return;
+                    }
+
+                    try {
+                        // HML recebe a lista ativa + candidatos (ligados), na
+                        // mesma ordem de load — o teste roda em cima do stack real
+                        $data = $this->getData();
+                        $hmlMods = [];
+                        foreach ($data['mods'] as $entry) {
+                            if (static::isCandidate($entry)) {
+                                $entry['enabled'] = true;
+                            }
+                            unset($entry['status'], $entry['approved_at']);
+                            $hmlMods[] = $entry;
+                        }
+
+                        $hmlData = ['mods' => $hmlMods, 'extra_mod_ids' => $data['extra_mod_ids']];
+                        $this->modList()->save($hml, $hmlData);
+                        $this->modList()->applyToIni($hml, $hmlData);
+                        $serverRepository->setServer($hml)->power('restart');
+
+                        $data['homologation']['last_test'] = [
+                            'at' => now()->toIso8601String(),
+                            'workshop_ids' => array_map(fn ($entry) => (string) $entry['workshop_id'], $candidates),
+                        ];
+                        $this->saveData($data);
+
+                        Notification::make()
+                            ->title(static::t('notifications.test_sent', ['server' => $hml->name]))
+                            ->body(static::t('notifications.test_sent_body', ['count' => count($candidates)]))
+                            ->success()
+                            ->persistent()
+                            ->send();
+                    } catch (Exception $exception) {
+                        report($exception);
+                        Notification::make()
+                            ->title(static::t('notifications.test_failed'))
+                            ->body($exception->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                }),
             Action::make('apply')
                 ->label(static::t('actions.apply'))
                 ->icon('tabler-device-floppy')
                 ->color('warning')
+                ->visible(fn () => $this->activeTab !== 'candidates')
                 ->requiresConfirmation()
                 ->modalHeading(static::t('modals.apply_heading'))
                 ->modalDescription(function () {
                     $data = $this->getData();
-                    $enabled = count(array_filter($data['mods'], fn ($entry) => !empty($entry['enabled'])));
+                    $enabled = count(array_filter($data['mods'], fn ($entry) => !empty($entry['enabled']) && !static::isCandidate($entry)));
 
                     return static::t('modals.apply_description', ['enabled' => $enabled, 'total' => count($data['mods'])]);
                 })
@@ -767,7 +972,7 @@ class ZomboidWorkshopPage extends Page implements HasTable
     {
         return $schema
             ->components([
-                Grid::make(3)
+                Grid::make(4)
                     ->schema([
                         TextEntry::make('total')
                             ->label(static::t('badges.total'))
@@ -776,9 +981,15 @@ class ZomboidWorkshopPage extends Page implements HasTable
                             ->size(TextSize::Large),
                         TextEntry::make('ativos')
                             ->label(static::t('badges.active'))
-                            ->state(fn () => count(array_filter($this->getData()['mods'], fn ($entry) => !empty($entry['enabled']))))
+                            ->state(fn () => count(array_filter($this->getData()['mods'], fn ($entry) => !empty($entry['enabled']) && !static::isCandidate($entry))))
                             ->badge()
                             ->color('success')
+                            ->size(TextSize::Large),
+                        TextEntry::make('candidatos')
+                            ->label(static::t('badges.candidates'))
+                            ->state(fn () => count($this->candidates()))
+                            ->badge()
+                            ->color('warning')
                             ->size(TextSize::Large),
                         TextEntry::make('extras')
                             ->label(static::t('badges.loose'))

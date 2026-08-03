@@ -15,12 +15,16 @@ use Exception;
  *  {
  *    "mods": [
  *      {"workshop_id": "123", "title": "...", "preview_url": "...",
- *       "mod_ids": ["A", "B"], "selected_mod_ids": ["A"], "enabled": true}
+ *       "mod_ids": ["A", "B"], "selected_mod_ids": ["A"], "enabled": true,
+ *       "status": "candidate"}
  *    ],
- *    "extra_mod_ids": ["ids do ini que não casaram com nenhum item"]
+ *    "extra_mod_ids": ["ids do ini que não casaram com nenhum item"],
+ *    "homologation": {"hml_server_id": 2, "last_test": {"at": "...", "workshop_ids": []}}
  *  }
  *
  * A ordem do array "mods" é a ordem de load (importa no PZ).
+ * "status" ausente = mod da lista ativa; "candidate" = em homologação
+ * (nunca entra no ini deste servidor — só no servidor de teste).
  */
 class ModListService
 {
@@ -28,7 +32,7 @@ class ModListService
 
     public function __construct(protected DaemonFileRepository $fileRepository) {}
 
-    /** @return array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>} */
+    /** @return array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>, homologation: array<string, mixed>} */
     public function load(Server $server): array
     {
         try {
@@ -41,6 +45,7 @@ class ModListService
         return [
             'mods' => array_values($data['mods'] ?? []),
             'extra_mod_ids' => array_values($data['extra_mod_ids'] ?? []),
+            'homologation' => is_array($data['homologation'] ?? null) ? $data['homologation'] : [],
         ];
     }
 
@@ -130,7 +135,8 @@ class ModListService
         $modIds = [];
 
         foreach ($data['mods'] as $entry) {
-            if (empty($entry['enabled'])) {
+            // candidatos em homologação nunca entram no ini deste servidor
+            if (empty($entry['enabled']) || ($entry['status'] ?? null) === 'candidate') {
                 continue;
             }
 
