@@ -81,6 +81,13 @@ class ZomboidWorkshopPage extends Page
         $this->loadDefaultActiveTab();
     }
 
+    public function updatedActiveTab(): void
+    {
+        // sobrescreve o HasTabs: a versão dele chama resetPage(), que só
+        // existe em componente com paginação — aqui a paginação vive nos
+        // widgets, então trocar a aba não precisa fazer nada.
+    }
+
     /** @return array<string, Tab> Abas numeradas na ordem do fluxo, com contadores. */
     public function getTabs(): array
     {
