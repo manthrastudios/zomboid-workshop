@@ -11,6 +11,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Tevo\ZomboidWorkshop\Services\SteamWorkshopService;
+use Tevo\ZomboidWorkshop\Services\WorldModsService;
 
 /**
  * Seção 3 — a lista que vale no servidor. Reordenar, desligar, remover,
@@ -18,6 +19,30 @@ use Tevo\ZomboidWorkshop\Services\SteamWorkshopService;
  */
 class DeployedModsTable extends BaseModsTable
 {
+    /** @var array<int, string>|null|false  false = ainda não perguntei */
+    protected array|null|false $worldVictims = false;
+
+    /**
+     * Mods que o mundo tem dentro e que este "Salvar" deixaria de carregar.
+     *
+     * `null` = não deu pra ler o mundo. **Isso não é "nenhum"** — servidor que
+     * nunca bootou, leitura falha ou formato mudado caem aqui, e nesses casos a
+     * tela não promete segurança nenhuma, só deixa de gritar.
+     *
+     * Memorizado na instância porque a modal do Filament chama heading,
+     * descrição, ícone e rótulo do botão em sequência, e cada um perguntaria de
+     * novo.
+     *
+     * @return array<int, string>|null
+     */
+    protected function worldVictims(): ?array
+    {
+        if ($this->worldVictims === false) {
+            $this->worldVictims = app(WorldModsService::class)->victims($this->server(), $this->getData());
+        }
+
+        return $this->worldVictims;
+    }
     public function table(Table $table): Table
     {
         $extras = count($this->getData()['extra_mod_ids']);
@@ -87,8 +112,27 @@ class DeployedModsTable extends BaseModsTable
                     ->icon('tabler-device-floppy')
                     ->color('warning')
                     ->requiresConfirmation()
-                    ->modalHeading(static::t('modals.apply_heading'))
+                    // O apply é o portão: remover e desligar só mexem no JSON
+                    // do plugin, é aqui que o Mods= muda e o mundo passa a
+                    // correr risco. Guardar aqui pega também os caminhos que
+                    // não têm aviso nenhum (importar ini, editar ids).
+                    ->modalIcon(fn () => $this->worldVictims() ? 'tabler-alert-triangle' : null)
+                    ->modalHeading(fn () => static::t(
+                        $this->worldVictims() ? 'modals.apply_heading_danger' : 'modals.apply_heading'
+                    ))
+                    ->modalSubmitActionLabel(fn () => $this->worldVictims()
+                        ? static::t('modals.apply_submit_danger')
+                        : null)
                     ->modalDescription(function () {
+                        $victims = $this->worldVictims();
+
+                        if ($victims) {
+                            return static::t('modals.apply_description_danger', [
+                                'count' => count($victims),
+                                'mods' => implode(', ', $victims),
+                            ]);
+                        }
+
                         $data = $this->getData();
                         $enabled = count(array_filter($data['mods'], fn ($entry) => !empty($entry['enabled']) && !static::isCandidate($entry)));
 

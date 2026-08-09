@@ -121,15 +121,18 @@ class ModListService
     }
 
     /**
-     * Reescreve as linhas Mods= e WorkshopItems= do ini a partir da lista.
-     * Só entram entradas habilitadas; a ordem do array é preservada.
+     * O que um "Salvar no servidor" gravaria agora — sem gravar nada.
      *
-     * @param array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>} $data
+     * Extraído do `applyToIni` de propósito: a guarda de mundo
+     * ([WorldModsService]) precisa enxergar exatamente o que o apply faria, e
+     * duas cópias da regra (habilitado? candidato? extra_mod_ids?) divergiriam
+     * na primeira mudança, fazendo a guarda avisar sobre um estado que não é o
+     * que vai ser escrito.
+     *
+     * @param  array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>}  $data
      * @return array{workshop_ids: array<int, string>, mod_ids: array<int, string>}
-     *
-     * @throws Exception
      */
-    public function applyToIni(Server $server, array $data): array
+    public function plan(array $data): array
     {
         $workshopIds = [];
         $modIds = [];
@@ -152,7 +155,24 @@ class ModListService
             $modIds[] = (string) $modId;
         }
 
-        $modIds = array_values(array_unique($modIds));
+        return [
+            'workshop_ids' => $workshopIds,
+            'mod_ids' => array_values(array_unique($modIds)),
+        ];
+    }
+
+    /**
+     * Reescreve as linhas Mods= e WorkshopItems= do ini a partir da lista.
+     * Só entram entradas habilitadas; a ordem do array é preservada.
+     *
+     * @param array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>} $data
+     * @return array{workshop_ids: array<int, string>, mod_ids: array<int, string>}
+     *
+     * @throws Exception
+     */
+    public function applyToIni(Server $server, array $data): array
+    {
+        ['workshop_ids' => $workshopIds, 'mod_ids' => $modIds] = $this->plan($data);
 
         $iniPath = $this->getIniPath($server);
         $content = $this->fileRepository->setServer($server)->getContent($iniPath);
