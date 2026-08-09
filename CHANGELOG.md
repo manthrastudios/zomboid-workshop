@@ -2,6 +2,29 @@
 
 All notable changes to this plugin are documented here.
 
+## [0.9.0]
+
+### Added
+
+- **Undo the last save, while it still means something.** Writing the mod list
+  to the server configuration does not touch the world until the server next
+  boots, so between those two moments there is a real window to step back — and
+  nothing used it.
+
+  After a save, an "Undo save" button appears and restores the previous
+  `Mods=` / `WorkshopItems=`. It disappears once the server has restarted,
+  because by then the world has already loaded without those mods and putting
+  the lines back would not undo a corrupted save. A button promising to undo
+  the un-undoable is worse than no button.
+
+  Restarts are detected by the name of the newest server debug log, which the
+  game stamps with the boot time.
+
+  **Only the configuration comes back.** Your mod list stays as you left it —
+  the resulting state is exactly where you were one click before saving, which
+  is where you wanted to be. Files deleted by the trash button do not come back
+  either.
+
 ## [0.8.0]
 
 ### Added

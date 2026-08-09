@@ -46,6 +46,9 @@ class ModListService
             'mods' => array_values($data['mods'] ?? []),
             'extra_mod_ids' => array_values($data['extra_mod_ids'] ?? []),
             'homologation' => is_array($data['homologation'] ?? null) ? $data['homologation'] : [],
+            // Precisa vir no load, senão o próximo save o apaga: quem grava
+            // escreve exatamente o que este método devolve.
+            'last_apply' => is_array($data['last_apply'] ?? null) ? $data['last_apply'] : null,
         ];
     }
 
@@ -56,6 +59,35 @@ class ModListService
             self::METADATA_FILE,
             json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         );
+    }
+
+    /**
+     * Identifica a SESSÃO do servidor: o nome do DebugLog mais novo, que o PZ
+     * batiza com o horário do boot.
+     *
+     * Serve pra saber se o servidor subiu depois de um "Salvar". Comparar por
+     * nome é o jeito confiável — `find -newermt` e tail do console dão falso
+     * positivo (aprendido na operação do chupacabra).
+     *
+     * `null` = não deu pra ler (servidor que nunca bootou, pasta ausente).
+     */
+    public function bootMarker(Server $server): ?string
+    {
+        try {
+            $contents = $this->fileRepository->setServer($server)->getDirectory($this->getCacheDir($server).'/Logs');
+        } catch (Exception) {
+            return null;
+        }
+
+        if (isset($contents['error'])) {
+            return null;
+        }
+
+        return collect($contents)
+            ->filter(fn ($item) => is_string($item['name'] ?? null) && str_ends_with($item['name'], 'DebugLog-server.txt'))
+            ->pluck('name')
+            ->sortDesc()
+            ->first();
     }
 
     /**
@@ -104,8 +136,12 @@ class ModListService
     /** @return array{workshop_ids: array<int, string>, mod_ids: array<int, string>} */
     public function readIni(Server $server): array
     {
-        $content = $this->fileRepository->setServer($server)->getContent($this->getIniPath($server));
+        return $this->parseIni($this->fileRepository->setServer($server)->getContent($this->getIniPath($server)));
+    }
 
+    /** @return array{workshop_ids: array<int, string>, mod_ids: array<int, string>} */
+    protected function parseIni(string $content): array
+    {
         $parse = function (string $key) use ($content): array {
             if (!preg_match('/^'.$key.'=(.*)$/mi', $content, $matches)) {
                 return [];
@@ -118,6 +154,72 @@ class ModListService
             'workshop_ids' => $parse('WorkshopItems'),
             'mod_ids' => $parse('Mods'),
         ];
+    }
+
+    /**
+     * A janela de arrependimento ainda está aberta?
+     *
+     * Existe último salvamento E o servidor não subiu desde então. Depois do
+     * boot o estrago no mundo já aconteceu, e devolver o ini não desfaz save
+     * corrompido — oferecer "desfazer" ali seria consolo falso, que é pior que
+     * botão nenhum.
+     *
+     * @param  array{last_apply?: array<string, mixed>|null}  $data
+     */
+    public function canUndoApply(Server $server, array $data): bool
+    {
+        $last = $data['last_apply'] ?? null;
+
+        if (!is_array($last) || !isset($last['ini'])) {
+            return false;
+        }
+
+        return ($last['boot'] ?? null) === $this->bootMarker($server);
+    }
+
+    /**
+     * Devolve ao ini o `Mods=`/`WorkshopItems=` de antes do último salvamento.
+     *
+     * ⚠️ **Só o ini volta — a lista fica como o dono deixou.** É de propósito:
+     * o estado resultante é exatamente o de um clique antes do "Salvar", que é
+     * onde ele quer voltar. Reconstruir a lista exigiria a API da Steam e
+     * inventaria uma decisão que não é nossa.
+     *
+     * @param  array{mods: array<int, array<string, mixed>>, extra_mod_ids: array<int, string>, last_apply?: array<string, mixed>|null}  $data
+     * @return array{workshop_ids: array<int, string>, mod_ids: array<int, string>}
+     *
+     * @throws Exception
+     */
+    public function undoApply(Server $server, array $data): array
+    {
+        if (!$this->canUndoApply($server, $data)) {
+            throw new Exception('Sem salvamento para desfazer, ou o servidor já reiniciou desde então.');
+        }
+
+        $workshopIds = array_map('strval', $data['last_apply']['ini']['workshop_ids'] ?? []);
+        $modIds = array_map('strval', $data['last_apply']['ini']['mod_ids'] ?? []);
+
+        $iniPath = $this->getIniPath($server);
+        $content = $this->fileRepository->setServer($server)->getContent($iniPath);
+
+        $replace = function (string $content, string $key, string $value): string {
+            $line = "$key=$value";
+            $replaced = preg_replace('/^'.$key.'=.*$/mi', $line, $content, 1, $count);
+
+            return $count === 0 ? rtrim($content, "\r\n")."\n$line\n" : $replaced;
+        };
+
+        $content = $replace($content, 'WorkshopItems', implode(';', $workshopIds));
+        $content = $replace($content, 'Mods', implode(';', $modIds));
+
+        $this->fileRepository->setServer($server)->putContent($iniPath, $content);
+
+        // Um salvamento, um desfazer: manter o retrato deixaria um botão que
+        // devolve um estado que já não é o anterior.
+        $data['last_apply'] = null;
+        $this->save($server, $data);
+
+        return ['workshop_ids' => $workshopIds, 'mod_ids' => $modIds];
     }
 
     /**
@@ -194,6 +296,11 @@ class ModListService
         $iniPath = $this->getIniPath($server);
         $content = $this->fileRepository->setServer($server)->getContent($iniPath);
 
+        // Retrato do que o ini tinha ANTES — é o que o desfazer devolve. A
+        // mudança só machuca o mundo no próximo boot, então existe uma janela
+        // real de arrependimento entre gravar e reiniciar.
+        $before = $this->parseIni($content);
+
         $replace = function (string $content, string $key, string $value): string {
             $line = "$key=$value";
             $replaced = preg_replace('/^'.$key.'=.*$/mi', $line, $content, 1, $count);
@@ -209,6 +316,12 @@ class ModListService
         $content = $replace($content, 'Mods', implode(';', $modIds));
 
         $this->fileRepository->setServer($server)->putContent($iniPath, $content);
+
+        $data['last_apply'] = [
+            'boot' => $this->bootMarker($server),
+            'ini' => $before,
+        ];
+        $this->save($server, $data);
 
         return ['workshop_ids' => $workshopIds, 'mod_ids' => $modIds];
     }

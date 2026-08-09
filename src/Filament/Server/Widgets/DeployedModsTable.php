@@ -201,6 +201,13 @@ class DeployedModsTable extends BaseModsTable
                         try {
                             $result = $this->modList()->applyToIni($this->server(), $this->getData());
 
+                            // O apply gravou o retrato do desfazer no volume;
+                            // sem soltar o cache o botão só apareceria no
+                            // próximo carregamento — e é agora que ele serve.
+                            $this->data = null;
+                            $this->worldVictims = false;
+                            $this->dispatch('zw-mods-updated');
+
                             Notification::make()
                                 ->title(static::t('notifications.applied'))
                                 ->body(static::t('notifications.applied_body', [
@@ -214,6 +221,42 @@ class DeployedModsTable extends BaseModsTable
                             report($exception);
                             Notification::make()
                                 ->title(static::t('notifications.apply_failed'))
+                                ->body($exception->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
+                // Só aparece enquanto a janela existe: gravou e o servidor
+                // ainda não subiu. Botão que promete desfazer o indesfazível
+                // seria pior que não ter botão.
+                Action::make('undo_apply')
+                    ->label(static::t('actions.undo_apply'))
+                    ->icon('tabler-arrow-back-up')
+                    ->color('gray')
+                    ->visible(fn () => $this->modList()->canUndoApply($this->server(), $this->getData()))
+                    ->requiresConfirmation()
+                    ->modalHeading(static::t('modals.undo_heading'))
+                    ->modalDescription(static::t('modals.undo_description'))
+                    ->action(function () {
+                        try {
+                            $result = $this->modList()->undoApply($this->server(), $this->getData());
+
+                            $this->data = null;
+                            $this->dispatch('zw-mods-updated');
+
+                            Notification::make()
+                                ->title(static::t('notifications.undone'))
+                                ->body(static::t('notifications.undone_body', [
+                                    'workshop' => count($result['workshop_ids']),
+                                    'ids' => count($result['mod_ids']),
+                                ]))
+                                ->success()
+                                ->persistent()
+                                ->send();
+                        } catch (Exception $exception) {
+                            report($exception);
+                            Notification::make()
+                                ->title(static::t('notifications.undo_failed'))
                                 ->body($exception->getMessage())
                                 ->danger()
                                 ->send();
