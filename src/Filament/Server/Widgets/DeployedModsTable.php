@@ -125,6 +125,13 @@ class DeployedModsTable extends BaseModsTable
                     // importa.
                     ->requiresConfirmation(fn (array $record) => (bool) $this->disablingHurtsWorld($record))
                     ->modalIcon('tabler-alert-triangle')
+                    // A modal herda a cor do BOTÃO, e o toggle é verde por ser
+                    // "ligado" — sem isto o aviso de corromper save sai verde,
+                    // com o confirmar parecendo a ação positiva. A cor tem que
+                    // seguir a gravidade do que se anuncia, não o estado da
+                    // linha. Aqui a modal só existe quando é destrutivo.
+                    ->modalIconColor('danger')
+                    ->modalSubmitAction(fn ($action) => $action->color('danger'))
                     ->modalHeading(static::t('modals.disable_heading_danger'))
                     ->modalDescription(fn (array $record) => static::t('modals.disable_description_danger', [
                         'title' => $record['title'],
@@ -165,6 +172,10 @@ class DeployedModsTable extends BaseModsTable
                     // correr risco. Guardar aqui pega também os caminhos que
                     // não têm aviso nenhum (importar ini, editar ids).
                     ->modalIcon(fn () => $this->worldVictims() ? 'tabler-alert-triangle' : null)
+                    // Salvar é âmbar no uso normal; quando arranca mod do mundo
+                    // anuncia a mesma perda que o remover, e tem que ler igual.
+                    ->modalIconColor(fn () => $this->worldVictims() ? 'danger' : null)
+                    ->modalSubmitAction(fn ($action) => $this->worldVictims() ? $action->color('danger') : $action)
                     ->modalHeading(fn () => static::t(
                         $this->worldVictims() ? 'modals.apply_heading_danger' : 'modals.apply_heading'
                     ))

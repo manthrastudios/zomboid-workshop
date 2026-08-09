@@ -25,6 +25,16 @@ All notable changes to this plugin are documented here.
 
 - Removing a mod the world uses now leads with that, above the file deletion.
 
+### Fixed
+
+- **The world warnings no longer come out in three different colours.** A
+  confirmation dialog inherits the colour of the button that opened it, so the
+  same warning — this corrupts every player's save — was red on remove, amber on
+  save and **green** on the toggle, where the confirm button read as the
+  positive action. When the world is at risk all three are red now, because the
+  colour has to follow the severity of what is being announced, not the state of
+  the row.
+
 ## [0.7.0]
 
 ### Added
