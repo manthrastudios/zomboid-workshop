@@ -37,7 +37,7 @@ return [
         'move_down' => 'Bajar (carga después)',
         'edit_ids' => 'Editar Mod IDs',
         'rescan' => 'Detectar Mod IDs desde los archivos descargados',
-        'remove' => 'Quitar de la lista',
+        'remove' => 'Quitar y borrar archivos',
         'add' => 'Añadir',
         'in_list' => 'En tu lista',
         'approve' => 'Aprobar (pasa a la lista activa)',
@@ -85,7 +85,7 @@ return [
 
     'modals' => [
         'remove_heading' => 'Quitar mod',
-        'remove_description' => '¿Quitar ":title" de tu lista? Los archivos siguen descargados; simplemente dejará de cargarse cuando guardes.',
+        'remove_description' => '¿Quitar ":title"? Sale de la lista y sus archivos descargados se borran del servidor. Si solo quieres que deje de cargarse, usa el interruptor de la fila.',
         'import_ini_heading' => 'Importar configuración actual',
         'import_ini_description' => 'Lee los mods que tu servidor ya usa y construye la lista a partir de ellos. Lo que ya está en tu lista se conserva.',
         'apply_heading' => '¿Guardar la lista de mods en el servidor?',
@@ -137,7 +137,8 @@ return [
         'rescan_empty' => 'Nada encontrado en disco todavía',
         'rescan_empty_body' => 'El servidor aún no descargó este mod — reinícialo una vez e inténtalo de nuevo.',
         'rescan_found' => 'Mod IDs encontrados: :ids',
-        'removed' => 'Quitado de tu lista',
+        'removed' => 'Quitado y archivos borrados',
+        'removed_files_kept' => 'Quitado de la lista, pero no se pudieron borrar sus archivos del servidor',
         'applied' => '¡Lista de mods guardada!',
         'applied_body' => ':workshop mods con :ids Mod IDs configurados. Reinicia el servidor cuando quieras activarlos.',
         'apply_failed' => 'No pude guardar la lista',

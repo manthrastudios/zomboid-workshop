@@ -37,7 +37,7 @@ return [
         'move_down' => 'Descendre (chargé plus tard)',
         'edit_ids' => 'Modifier les Mod IDs',
         'rescan' => 'Détecter les Mod IDs depuis les fichiers téléchargés',
-        'remove' => 'Retirer de la liste',
+        'remove' => 'Retirer et supprimer les fichiers',
         'add' => 'Ajouter',
         'in_list' => 'Dans votre liste',
         'approve' => 'Approuver (passe dans la liste active)',
@@ -85,7 +85,7 @@ return [
 
     'modals' => [
         'remove_heading' => 'Retirer le mod',
-        'remove_description' => 'Retirer « :title » de votre liste ? Les fichiers restent téléchargés ; il ne sera simplement plus chargé après l\'enregistrement.',
+        'remove_description' => 'Retirer « :title » ? Il quitte la liste et ses fichiers téléchargés sont supprimés du serveur. Si vous voulez seulement qu\'il cesse d\'être chargé, utilisez plutôt l\'interrupteur de la ligne.',
         'import_ini_heading' => 'Importer la configuration actuelle',
         'import_ini_description' => 'Lit les mods que votre serveur utilise déjà et construit la liste à partir de ceux-ci. Ce qui est déjà dans votre liste est conservé.',
         'apply_heading' => 'Enregistrer la liste de mods sur le serveur ?',
@@ -137,7 +137,8 @@ return [
         'rescan_empty' => 'Rien trouvé sur le disque pour l\'instant',
         'rescan_empty_body' => 'Le serveur n\'a pas encore téléchargé ce mod — redémarrez-le une fois puis réessayez.',
         'rescan_found' => 'Mod IDs trouvés : :ids',
-        'removed' => 'Retiré de votre liste',
+        'removed' => 'Retiré et fichiers supprimés',
+        'removed_files_kept' => 'Retiré de la liste, mais ses fichiers n\'ont pas pu être supprimés du serveur',
         'applied' => 'Liste de mods enregistrée !',
         'applied_body' => ':workshop mods avec :ids Mod IDs configurés. Redémarrez le serveur quand vous voulez les mettre en ligne.',
         'apply_failed' => 'Impossible d\'enregistrer la liste',

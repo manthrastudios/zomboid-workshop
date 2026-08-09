@@ -37,7 +37,7 @@ return [
         'move_down' => 'Nach unten (lädt später)',
         'edit_ids' => 'Mod-IDs bearbeiten',
         'rescan' => 'Mod-IDs aus heruntergeladenen Dateien erkennen',
-        'remove' => 'Aus der Liste entfernen',
+        'remove' => 'Entfernen und Dateien löschen',
         'add' => 'Hinzufügen',
         'in_list' => 'In deiner Liste',
         'approve' => 'Freigeben (in die aktive Liste)',
@@ -85,7 +85,7 @@ return [
 
     'modals' => [
         'remove_heading' => 'Mod entfernen',
-        'remove_description' => '„:title" aus deiner Liste entfernen? Die Dateien bleiben heruntergeladen; er wird nach dem Speichern nur nicht mehr geladen.',
+        'remove_description' => '„:title" entfernen? Er verlässt die Liste und seine heruntergeladenen Dateien werden vom Server gelöscht. Wenn er nur nicht mehr geladen werden soll, nutze stattdessen den Schalter in der Zeile.',
         'import_ini_heading' => 'Aktuelle Konfiguration importieren',
         'import_ini_description' => 'Liest die Mods, die dein Server bereits nutzt, und baut daraus die Liste. Was schon in deiner Liste ist, bleibt erhalten.',
         'apply_heading' => 'Mod-Liste auf dem Server speichern?',
@@ -137,7 +137,8 @@ return [
         'rescan_empty' => 'Noch nichts auf der Festplatte gefunden',
         'rescan_empty_body' => 'Der Server hat diesen Mod noch nicht heruntergeladen — starte ihn einmal neu und versuch es dann erneut.',
         'rescan_found' => 'Gefundene Mod-IDs: :ids',
-        'removed' => 'Aus deiner Liste entfernt',
+        'removed' => 'Entfernt und Dateien gelöscht',
+        'removed_files_kept' => 'Aus der Liste entfernt, aber die Dateien konnten nicht vom Server gelöscht werden',
         'applied' => 'Mod-Liste gespeichert!',
         'applied_body' => ':workshop Mods mit :ids Mod-IDs eingerichtet. Starte den Server neu, wann immer du sie live schalten willst.',
         'apply_failed' => 'Liste konnte nicht gespeichert werden',

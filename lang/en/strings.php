@@ -37,7 +37,7 @@ return [
         'move_down' => 'Move down (loads later)',
         'edit_ids' => 'Edit mod IDs',
         'rescan' => 'Detect mod IDs from downloaded files',
-        'remove' => 'Remove from list',
+        'remove' => 'Remove and delete files',
         'add' => 'Add',
         'in_list' => 'In your list',
         'approve' => 'Approve (move to active list)',
@@ -85,7 +85,7 @@ return [
 
     'modals' => [
         'remove_heading' => 'Remove mod',
-        'remove_description' => 'Remove ":title" from your list? Its files stay downloaded; it just won\'t load anymore after you save.',
+        'remove_description' => 'Remove ":title"? It leaves the list and its downloaded files are deleted from the server. If you only want it to stop loading, use the row toggle instead.',
         'import_ini_heading' => 'Import current setup',
         'import_ini_description' => 'Syncs your list with what the server actually runs right now: whatever is on the server gets switched on and put in its order; anything else gets switched off (nothing is lost). Use this if someone edited the config outside the panel.',
         'apply_heading' => 'Save mod list to server?',
@@ -137,7 +137,8 @@ return [
         'rescan_empty' => 'Nothing found on disk yet',
         'rescan_empty_body' => 'The server hasn\'t downloaded this mod yet — restart it once and try again.',
         'rescan_found' => 'Mod IDs found: :ids',
-        'removed' => 'Removed from your list',
+        'removed' => 'Removed and files deleted',
+        'removed_files_kept' => 'Removed from the list, but its files could not be deleted from the server',
         'applied' => 'Mod list saved!',
         'applied_body' => ':workshop mods with :ids mod IDs are set up. Restart the server whenever you\'re ready to make them live.',
         'apply_failed' => 'Couldn\'t save the list',

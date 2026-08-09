@@ -37,7 +37,7 @@ return [
         'move_down' => '下移（更晚加载）',
         'edit_ids' => '编辑Mod ID',
         'rescan' => '从已下载文件检测Mod ID',
-        'remove' => '从列表移除',
+        'remove' => '移除并删除文件',
         'add' => '添加',
         'in_list' => '已在列表中',
         'approve' => '批准（进入正式列表）',
@@ -85,7 +85,7 @@ return [
 
     'modals' => [
         'remove_heading' => '移除模组',
-        'remove_description' => '将“:title”从列表中移除？文件仍保留在服务器上，保存后它只是不再加载。',
+        'remove_description' => '移除“:title”？它将从列表中消失，已下载的文件也会从服务器上删除。如果只是想让它不再加载，请改用该行的开关。',
         'import_ini_heading' => '导入当前配置',
         'import_ini_description' => '读取服务器已在使用的模组并据此生成列表。已在列表中的内容将被保留。',
         'apply_heading' => '将模组列表保存到服务器？',
@@ -137,7 +137,8 @@ return [
         'rescan_empty' => '磁盘上尚未找到任何内容',
         'rescan_empty_body' => '服务器还没有下载该模组——重启一次后再试。',
         'rescan_found' => '找到的Mod ID：:ids',
-        'removed' => '已从列表移除',
+        'removed' => '已移除并删除文件',
+        'removed_files_kept' => '已从列表移除，但无法删除服务器上的文件',
         'applied' => '模组列表已保存！',
         'applied_body' => '已配置:workshop个模组、:ids个Mod ID。准备好后重启服务器即可生效。',
         'apply_failed' => '无法保存列表',

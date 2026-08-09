@@ -37,7 +37,7 @@ return [
         'move_down' => 'Descer (carrega depois)',
         'edit_ids' => 'Editar Mod IDs',
         'rescan' => 'Detectar Mod IDs pelos arquivos baixados',
-        'remove' => 'Remover da lista',
+        'remove' => 'Remover e apagar arquivos',
         'add' => 'Adicionar',
         'in_list' => 'Na sua lista',
         'approve' => 'Aprovar (vai pra lista ativa)',
@@ -85,7 +85,7 @@ return [
 
     'modals' => [
         'remove_heading' => 'Remover mod',
-        'remove_description' => 'Remover ":title" da sua lista? Os arquivos continuam baixados; ele só deixa de carregar depois que você salvar.',
+        'remove_description' => 'Remover ":title"? Ele sai da lista e os arquivos baixados são apagados do servidor. Se você só quer que ele pare de carregar, use o Desligar da linha em vez disto.',
         'import_ini_heading' => 'Importar configuração atual',
         'import_ini_description' => 'Lê os mods que o servidor já usa e monta a lista a partir deles. O que já está na sua lista é mantido.',
         'apply_heading' => 'Salvar a lista de mods no servidor?',
@@ -137,7 +137,8 @@ return [
         'rescan_empty' => 'Nada encontrado no disco ainda',
         'rescan_empty_body' => 'O servidor ainda não baixou esse mod — reinicia ele uma vez e tenta de novo.',
         'rescan_found' => 'Mod IDs encontrados: :ids',
-        'removed' => 'Removido da sua lista',
+        'removed' => 'Removido e arquivos apagados',
+        'removed_files_kept' => 'Removido da lista, mas não deu pra apagar os arquivos do servidor',
         'applied' => 'Lista de mods salva!',
         'applied_body' => ':workshop mods com :ids Mod IDs configurados. Reinicie o servidor quando quiser colocar no ar.',
         'apply_failed' => 'Não consegui salvar a lista',

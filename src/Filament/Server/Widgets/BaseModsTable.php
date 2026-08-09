@@ -3,6 +3,7 @@
 namespace Tevo\ZomboidWorkshop\Filament\Server\Widgets;
 
 use App\Models\Server;
+use App\Repositories\Daemon\DaemonFileRepository;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
@@ -383,8 +384,40 @@ abstract class BaseModsTable extends TableWidget
 
                 unset($data['mods'][$index]);
                 $this->saveData($data);
-                Notification::make()->title(static::t('notifications.removed'))->success()->send();
+
+                // Remover é remover: quem só quer parar de carregar tem o
+                // Ligar/Desligar da linha. Deixar os arquivos pra trás fazia o
+                // lixinho mentir e o volume crescer sem ninguém ver.
+                $wiped = $this->deleteModFiles((string) $record['workshop_id']);
+
+                Notification::make()
+                    ->title(static::t($wiped ? 'notifications.removed' : 'notifications.removed_files_kept'))
+                    ->status($wiped ? 'success' : 'warning')
+                    ->send();
             });
+    }
+
+    /**
+     * Apaga o conteúdo baixado do mod no volume. Mesmo caminho que o reject do
+     * HML já usava (`TestDeployTable::cleanupOnHml`).
+     *
+     * Falha não é fatal: a lista já foi salva, e sumir com a linha e ainda
+     * assim avisar que o arquivo ficou é melhor que abortar tudo. Por isso o
+     * retorno vira o tom da notificação em vez de exceção.
+     */
+    protected function deleteModFiles(string $workshopId): bool
+    {
+        try {
+            app(DaemonFileRepository::class)
+                ->setServer($this->server())
+                ->deleteFiles('steamapps/workshop/content/'.SteamWorkshopService::PZ_APP_ID, [$workshopId]);
+
+            return true;
+        } catch (Exception $exception) {
+            report($exception);
+
+            return false;
+        }
     }
 
     /** Busca local por título/mod id/workshop id, usada pela fila e pela lista do servidor. */

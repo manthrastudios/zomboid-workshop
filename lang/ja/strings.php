@@ -37,7 +37,7 @@ return [
         'move_down' => '下へ（後に読み込み）',
         'edit_ids' => 'Mod IDを編集',
         'rescan' => 'ダウンロード済みファイルからMod IDを検出',
-        'remove' => 'リストから削除',
+        'remove' => '削除してファイルも消す',
         'add' => '追加',
         'in_list' => 'リストにあります',
         'approve' => '承認（本番リストへ）',
@@ -85,7 +85,7 @@ return [
 
     'modals' => [
         'remove_heading' => 'MODを削除',
-        'remove_description' => '「:title」をリストから削除しますか？ファイルはダウンロードされたまま残り、保存後に読み込まれなくなるだけです。',
+        'remove_description' => '「:title」を削除しますか？リストから外れ、ダウンロード済みのファイルもサーバーから削除されます。読み込みを止めたいだけなら、行のスイッチを使ってください。',
         'import_ini_heading' => '現在の設定をインポート',
         'import_ini_description' => 'サーバーがすでに使用しているMODを読み取り、リストを作成します。リストにあるものは保持されます。',
         'apply_heading' => 'MODリストをサーバーに保存しますか？',
@@ -137,7 +137,8 @@ return [
         'rescan_empty' => 'ディスク上にはまだ何も見つかりません',
         'rescan_empty_body' => 'サーバーはまだこのMODをダウンロードしていません。一度再起動してから再試行してください。',
         'rescan_found' => '見つかったMod ID: :ids',
-        'removed' => 'リストから削除しました',
+        'removed' => '削除し、ファイルも消しました',
+        'removed_files_kept' => 'リストからは削除しましたが、サーバー上のファイルを消せませんでした',
         'applied' => 'MODリストを保存しました！',
         'applied_body' => ':workshop個のMOD、:ids個のMod IDを設定しました。反映したいときにサーバーを再起動してください。',
         'apply_failed' => 'リストを保存できませんでした',
