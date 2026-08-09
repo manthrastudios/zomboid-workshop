@@ -22,6 +22,8 @@ return [
         'mod_ids' => 'Mod-IDs',
         'active' => 'Aktiv',
         'none_detected' => 'noch keine erkannt',
+        'in_world' => 'In der Welt',
+        'in_world_tooltip' => 'Die aktuelle Welt benutzt diesen Mod bereits. Ihn zu entfernen beschädigt den Spielstand aller Spieler.',
         'workshop' => 'Workshop :id',
         'rating' => 'Bewertung',
         'votes' => ':count Stimmen',
@@ -85,6 +87,11 @@ return [
 
     'modals' => [
         'remove_heading' => 'Mod entfernen',
+        'remove_heading_danger' => 'Die Welt benutzt diesen Mod',
+        'remove_description_danger' => '„:title" entfernen? Die aktuelle Welt benutzt :mods. Einen Mod zu entfernen, den die Welt enthält, beschädigt beim nächsten Start den Spielstand ALLER Spieler — und hier verschwinden auch die Dateien, du kannst es also nicht rückgängig machen, ohne alles neu zu laden. Wenn du keine neue Welt beginnst, brich ab.',
+        'disable_heading_danger' => 'Deaktivieren nimmt den Mod aus der Welt, genau wie Entfernen',
+        'disable_description_danger' => '„:title" deaktivieren? Die aktuelle Welt benutzt :mods, und „Auf dem Server speichern" schreibt nur aktive Mods — Deaktivieren nimmt ihn also genauso aus der Welt wie Entfernen und beschädigt den Spielstand ALLER Spieler. Die Dateien bleiben auf dem Server, das schützt die Welt aber nicht.',
+        'disable_submit_danger' => 'Trotzdem deaktivieren',
         'remove_description' => '„:title" entfernen? Er verlässt die Liste und seine heruntergeladenen Dateien werden vom Server gelöscht. Wenn er nur nicht mehr geladen werden soll, nutze stattdessen den Schalter in der Zeile.',
         'import_ini_heading' => 'Aktuelle Konfiguration importieren',
         'import_ini_description' => 'Liest die Mods, die dein Server bereits nutzt, und baut daraus die Liste. Was schon in deiner Liste ist, bleibt erhalten.',

@@ -22,6 +22,8 @@ return [
         'mod_ids' => 'Mod IDs',
         'active' => 'Active',
         'none_detected' => 'none detected yet',
+        'in_world' => 'In the world',
+        'in_world_tooltip' => 'The current world already uses this mod. Taking it out corrupts the save for every player.',
         'workshop' => 'Workshop :id',
         'rating' => 'Rating',
         'votes' => ':count votes',
@@ -85,6 +87,11 @@ return [
 
     'modals' => [
         'remove_heading' => 'Remove mod',
+        'remove_heading_danger' => 'The world is using this mod',
+        'remove_description_danger' => 'Remove ":title"? The current world uses :mods. Taking out a mod the world has baked in corrupts the save for EVERY player at the next boot — and here the files go too, so you cannot even undo it without downloading everything again. If you are not starting a new world, cancel.',
+        'disable_heading_danger' => 'Disabling takes the mod out of the world, just like removing',
+        'disable_description_danger' => 'Disable ":title"? The current world uses :mods, and "Save to server" only writes enabled mods — so disabling takes it out of the world exactly like removing does, corrupting the save for EVERY player. The files stay on the server, but that does not protect the world.',
+        'disable_submit_danger' => 'Disable anyway',
         'remove_description' => 'Remove ":title"? It leaves the list and its downloaded files are deleted from the server. If you only want it to stop loading, use the row toggle instead.',
         'import_ini_heading' => 'Import current setup',
         'import_ini_description' => 'Syncs your list with what the server actually runs right now: whatever is on the server gets switched on and put in its order; anything else gets switched off (nothing is lost). Use this if someone edited the config outside the panel.',

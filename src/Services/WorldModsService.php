@@ -96,6 +96,30 @@ class WorldModsService
         return $victims;
     }
 
+    /**
+     * Os mods DESTA entrada que o mundo já tem dentro — o que torna desligar ou
+     * remover ela um ato destrutivo.
+     *
+     * @param  array<string, mixed>  $entry
+     * @return array<int, string>|null  null = desconhecido; vazio = não achei,
+     *                                  que **não** é o mesmo que "seguro"
+     */
+    public function entryModsInWorld(Server $server, array $entry): ?array
+    {
+        $world = $this->worldModIds($server);
+
+        if ($world === null) {
+            return null;
+        }
+
+        $ids = array_map('strtolower', ModListService::entryModIds($entry));
+
+        $hits = array_filter($world, fn (string $id) => in_array(strtolower($id), $ids, true));
+        sort($hits, SORT_NATURAL | SORT_FLAG_CASE);
+
+        return $hits;
+    }
+
     public function forget(Server $server): void
     {
         Cache::forget("zomboid-workshop:world-mods:{$server->id}");

@@ -43,6 +43,22 @@ class DeployedModsTable extends BaseModsTable
 
         return $this->worldVictims;
     }
+
+    /**
+     * Mods do mundo que ESTE clique no toggle arrancaria — vazio quando o clique
+     * vai ligar (nunca destrutivo) ou quando o mundo não usa nada dessa linha.
+     *
+     * @param  array<string, mixed>  $record
+     * @return array<int, string>
+     */
+    protected function disablingHurtsWorld(array $record): array
+    {
+        if (empty($record['enabled'])) {
+            return [];
+        }
+
+        return $this->worldModsFor($record) ?? [];
+    }
     public function table(Table $table): Table
     {
         $extras = count($this->getData()['extra_mod_ids']);
@@ -53,9 +69,16 @@ class DeployedModsTable extends BaseModsTable
             ->description(static::t('sections.deployed_desc').$extrasNote)
             ->records(function (?string $search) {
                 $mods = static::filterBySearch($this->activeMods(), $search);
+                $world = app(WorldModsService::class);
 
                 foreach ($mods as $index => $entry) {
                     $mods[$index]['position'] = $index;
+                    // Mundo ilegível vira lista vazia aqui de propósito: a
+                    // coluna só ACENDE, nunca tranquiliza — linha sem badge não
+                    // afirma nada, então colapsar desconhecido em vazio não
+                    // mente. O conjunto do mundo vem do cache do serviço, então
+                    // isto não é uma leitura por linha.
+                    $mods[$index]['world_mods'] = $world->entryModsInWorld($this->server(), $entry) ?? [];
                 }
 
                 return $mods;
@@ -72,6 +95,17 @@ class DeployedModsTable extends BaseModsTable
                     ->label(static::t('columns.mod_ids'))
                     ->badge()
                     ->placeholder(static::t('columns.none_detected')),
+                TextColumn::make('world_mods')
+                    ->label(static::t('columns.in_world'))
+                    ->badge()
+                    ->color('danger')
+                    ->icon('tabler-alert-triangle')
+                    ->tooltip(fn (array $record) => empty($record['world_mods'])
+                        ? null
+                        : static::t('columns.in_world_tooltip'))
+                    // Linha sem nada fica em branco, não com "—": ausência aqui
+                    // é silêncio, não um atestado de que dá pra tirar.
+                    ->placeholder(''),
                 IconColumn::make('enabled')
                     ->label(static::t('columns.active'))
                     ->boolean(),
@@ -83,6 +117,20 @@ class DeployedModsTable extends BaseModsTable
                     ->icon(fn (array $record) => empty($record['enabled']) ? 'tabler-toggle-left' : 'tabler-toggle-right')
                     ->color(fn (array $record) => empty($record['enabled']) ? 'gray' : 'success')
                     ->tooltip(fn (array $record) => empty($record['enabled']) ? static::t('row.enable') : static::t('row.disable'))
+                    // Desligar tira o mod do Mods= igual a remover — o apply só
+                    // grava os habilitados. Era um clique só, silencioso.
+                    // A confirmação aparece SÓ quando dói: ligar, ou desligar
+                    // mod que o mundo não usa, seguem um clique. Atrito onde não
+                    // há risco vira ruído, e ruído ensina a ignorar o aviso que
+                    // importa.
+                    ->requiresConfirmation(fn (array $record) => (bool) $this->disablingHurtsWorld($record))
+                    ->modalIcon('tabler-alert-triangle')
+                    ->modalHeading(static::t('modals.disable_heading_danger'))
+                    ->modalDescription(fn (array $record) => static::t('modals.disable_description_danger', [
+                        'title' => $record['title'],
+                        'mods' => implode(', ', $this->disablingHurtsWorld($record)),
+                    ]))
+                    ->modalSubmitActionLabel(static::t('modals.disable_submit_danger'))
                     ->action(function (array $record) {
                         $data = $this->getData();
                         $index = $this->findIndex((string) $record['workshop_id']);

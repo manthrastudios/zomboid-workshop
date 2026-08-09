@@ -22,6 +22,8 @@ return [
         'mod_ids' => 'Mod IDs',
         'active' => 'Activo',
         'none_detected' => 'ninguno detectado aún',
+        'in_world' => 'En el mundo',
+        'in_world_tooltip' => 'El mundo actual ya usa este mod. Sacarlo corrompe la partida de todos los jugadores.',
         'workshop' => 'Workshop :id',
         'rating' => 'Valoración',
         'votes' => ':count votos',
@@ -85,6 +87,11 @@ return [
 
     'modals' => [
         'remove_heading' => 'Quitar mod',
+        'remove_heading_danger' => 'El mundo está usando este mod',
+        'remove_description_danger' => '¿Quitar ":title"? El mundo actual usa :mods. Sacar un mod que el mundo tiene dentro corrompe la partida de TODOS los jugadores en el próximo arranque, y aquí los archivos también se borran, así que no podrás deshacerlo sin descargar todo otra vez. Si no vas a empezar un mundo nuevo, cancela.',
+        'disable_heading_danger' => 'Desactivar saca el mod del mundo, igual que quitarlo',
+        'disable_description_danger' => '¿Desactivar ":title"? El mundo actual usa :mods, y "Guardar en el servidor" solo escribe los mods activos, así que desactivarlo lo saca del mundo igual que quitarlo, corrompiendo la partida de TODOS los jugadores. Los archivos siguen en el servidor, pero eso no protege el mundo.',
+        'disable_submit_danger' => 'Desactivar de todos modos',
         'remove_description' => '¿Quitar ":title"? Sale de la lista y sus archivos descargados se borran del servidor. Si solo quieres que deje de cargarse, usa el interruptor de la fila.',
         'import_ini_heading' => 'Importar configuración actual',
         'import_ini_description' => 'Lee los mods que tu servidor ya usa y construye la lista a partir de ellos. Lo que ya está en tu lista se conserva.',

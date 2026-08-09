@@ -2,6 +2,29 @@
 
 All notable changes to this plugin are documented here.
 
+## [0.8.0]
+
+### Added
+
+- **The world guard now covers every button, not just save.** A new "In the
+  world" column marks the mods the current world already has baked in, so the
+  risk is visible before you click anything. The column only ever lights up —
+  a blank row is silence, not a claim that the mod is safe to take out.
+
+- **Disabling a mod now asks for confirmation when it would break the world.**
+  This was a single silent click, and it is exactly as destructive as removing:
+  "Save to server" only writes enabled mods, so disabling takes the mod out of
+  the world the same way. The dialog says so plainly, because the toggle looks
+  like the cautious option and isn't.
+
+  Enabling a mod, or disabling one the world does not use, stays a single click.
+  Friction where there is no risk is noise, and noise teaches people to click
+  through the warning that matters.
+
+### Changed
+
+- Removing a mod the world uses now leads with that, above the file deletion.
+
 ## [0.7.0]
 
 ### Added

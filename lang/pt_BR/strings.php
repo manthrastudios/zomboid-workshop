@@ -22,6 +22,8 @@ return [
         'mod_ids' => 'Mod IDs',
         'active' => 'Ativo',
         'none_detected' => 'nenhum detectado ainda',
+        'in_world' => 'No mundo',
+        'in_world_tooltip' => 'O mundo atual já usa este mod. Tirar ele corrompe o save de todos os jogadores.',
         'workshop' => 'Workshop :id',
         'rating' => 'Avaliação',
         'votes' => ':count votos',
@@ -85,6 +87,11 @@ return [
 
     'modals' => [
         'remove_heading' => 'Remover mod',
+        'remove_heading_danger' => 'O mundo está usando este mod',
+        'remove_description_danger' => 'Remover ":title"? O mundo atual usa :mods. Tirar um mod que o mundo tem dentro corrompe o save de TODOS os jogadores no próximo boot — e aqui os arquivos também vão embora, então nem dá pra voltar atrás sem baixar tudo de novo. Se você não vai começar um mundo novo, cancele.',
+        'disable_heading_danger' => 'Desligar tira o mod do mundo, igual a remover',
+        'disable_description_danger' => 'Desligar ":title"? O mundo atual usa :mods, e o "Salvar no servidor" só grava os mods ligados — então desligar tira ele do mundo do mesmo jeito que remover, corrompendo o save de TODOS os jogadores. O arquivo fica no servidor, mas isso não protege o mundo.',
+        'disable_submit_danger' => 'Desligar mesmo assim',
         'remove_description' => 'Remover ":title"? Ele sai da lista e os arquivos baixados são apagados do servidor. Se você só quer que ele pare de carregar, use o Desligar da linha em vez disto.',
         'import_ini_heading' => 'Importar configuração atual',
         'import_ini_description' => 'Lê os mods que o servidor já usa e monta a lista a partir deles. O que já está na sua lista é mantido.',

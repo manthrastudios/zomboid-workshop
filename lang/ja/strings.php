@@ -22,6 +22,8 @@ return [
         'mod_ids' => 'Mod ID',
         'active' => '有効',
         'none_detected' => 'まだ検出されていません',
+        'in_world' => 'ワールド内',
+        'in_world_tooltip' => '現在のワールドはこのMODを既に使用しています。外すと全プレイヤーのセーブデータが破損します。',
         'workshop' => 'ワークショップ :id',
         'rating' => '評価',
         'votes' => ':count票',
@@ -85,6 +87,11 @@ return [
 
     'modals' => [
         'remove_heading' => 'MODを削除',
+        'remove_heading_danger' => 'ワールドがこのMODを使用しています',
+        'remove_description_danger' => '「:title」を削除しますか？現在のワールドは:modsを使用しています。ワールドに取り込まれたMODを外すと、次回起動時に全プレイヤーのセーブデータが破損します。さらにここではファイルも削除されるため、すべて再ダウンロードしない限り元に戻せません。新しいワールドを始めるのでなければ、キャンセルしてください。',
+        'disable_heading_danger' => '無効化は削除と同じくMODをワールドから外します',
+        'disable_description_danger' => '「:title」を無効にしますか？現在のワールドは:modsを使用しており、「サーバーに保存」は有効なMODしか書き込みません。つまり無効化は削除とまったく同じようにMODをワールドから外し、全プレイヤーのセーブデータを破損させます。ファイルはサーバーに残りますが、それでワールドが守られるわけではありません。',
+        'disable_submit_danger' => 'それでも無効にする',
         'remove_description' => '「:title」を削除しますか？リストから外れ、ダウンロード済みのファイルもサーバーから削除されます。読み込みを止めたいだけなら、行のスイッチを使ってください。',
         'import_ini_heading' => '現在の設定をインポート',
         'import_ini_description' => 'サーバーがすでに使用しているMODを読み取り、リストを作成します。リストにあるものは保持されます。',

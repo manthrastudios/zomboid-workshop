@@ -22,6 +22,8 @@ return [
         'mod_ids' => 'Mod IDs',
         'active' => 'Actif',
         'none_detected' => 'aucun détecté pour l\'instant',
+        'in_world' => 'Dans le monde',
+        'in_world_tooltip' => 'Le monde actuel utilise déjà ce mod. Le retirer corrompt la sauvegarde de tous les joueurs.',
         'workshop' => 'Workshop :id',
         'rating' => 'Note',
         'votes' => ':count votes',
@@ -85,6 +87,11 @@ return [
 
     'modals' => [
         'remove_heading' => 'Retirer le mod',
+        'remove_heading_danger' => 'Le monde utilise ce mod',
+        'remove_description_danger' => 'Retirer « :title » ? Le monde actuel utilise :mods. Retirer un mod que le monde contient corrompt la sauvegarde de TOUS les joueurs au prochain démarrage — et ici les fichiers partent aussi, vous ne pourrez donc pas revenir en arrière sans tout retélécharger. Si vous ne commencez pas un nouveau monde, annulez.',
+        'disable_heading_danger' => 'Désactiver retire le mod du monde, comme le supprimer',
+        'disable_description_danger' => 'Désactiver « :title » ? Le monde actuel utilise :mods, et « Enregistrer sur le serveur » n\'écrit que les mods actifs — désactiver le retire donc du monde exactement comme le supprimer, corrompant la sauvegarde de TOUS les joueurs. Les fichiers restent sur le serveur, mais cela ne protège pas le monde.',
+        'disable_submit_danger' => 'Désactiver quand même',
         'remove_description' => 'Retirer « :title » ? Il quitte la liste et ses fichiers téléchargés sont supprimés du serveur. Si vous voulez seulement qu\'il cesse d\'être chargé, utilisez plutôt l\'interrupteur de la ligne.',
         'import_ini_heading' => 'Importer la configuration actuelle',
         'import_ini_description' => 'Lit les mods que votre serveur utilise déjà et construit la liste à partir de ceux-ci. Ce qui est déjà dans votre liste est conservé.',

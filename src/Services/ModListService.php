@@ -121,6 +121,24 @@ class ModListService
     }
 
     /**
+     * Os Mod IDs de UMA entrada da lista.
+     *
+     * `selected_mod_ids` manda quando existe (o dono escolheu quais dos ids do
+     * pacote entram); senão vale a lista inteira detectada no disco. Regra
+     * usada tanto pra escrever o ini quanto pra cruzar com o mundo — se as duas
+     * pontas discordarem, a guarda vigia um estado que não é o que será escrito.
+     *
+     * @param  array<string, mixed>  $entry
+     * @return array<int, string>
+     */
+    public static function entryModIds(array $entry): array
+    {
+        $selected = $entry['selected_mod_ids'] ?? $entry['mod_ids'] ?? [];
+
+        return array_values(array_map('strval', is_array($selected) ? $selected : []));
+    }
+
+    /**
      * O que um "Salvar no servidor" gravaria agora — sem gravar nada.
      *
      * Extraído do `applyToIni` de propósito: a guarda de mundo
@@ -145,9 +163,8 @@ class ModListService
 
             $workshopIds[] = (string) $entry['workshop_id'];
 
-            $selected = $entry['selected_mod_ids'] ?? $entry['mod_ids'] ?? [];
-            foreach ($selected as $modId) {
-                $modIds[] = (string) $modId;
+            foreach (self::entryModIds($entry) as $modId) {
+                $modIds[] = $modId;
             }
         }
 

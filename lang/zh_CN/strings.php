@@ -22,6 +22,8 @@ return [
         'mod_ids' => 'Mod ID',
         'active' => '启用',
         'none_detected' => '尚未检测到',
+        'in_world' => '世界中已使用',
+        'in_world_tooltip' => '当前世界已在使用此模组。移除它会损坏所有玩家的存档。',
         'workshop' => '创意工坊 :id',
         'rating' => '评分',
         'votes' => ':count 个评价',
@@ -85,6 +87,11 @@ return [
 
     'modals' => [
         'remove_heading' => '移除模组',
+        'remove_heading_danger' => '当前世界正在使用此模组',
+        'remove_description_danger' => '移除“:title”？当前世界正在使用:mods。移除世界已包含的模组会在下次启动时损坏所有玩家的存档，而且这里文件也会一并删除，不重新下载就无法撤销。如果你不是要开新世界，请取消。',
+        'disable_heading_danger' => '停用与移除一样，会把模组从世界中拿掉',
+        'disable_description_danger' => '停用“:title”？当前世界正在使用:mods，而“保存到服务器”只写入已启用的模组——所以停用和移除一样会把它从世界中拿掉，损坏所有玩家的存档。文件仍留在服务器上，但那并不能保护世界。',
+        'disable_submit_danger' => '仍然停用',
         'remove_description' => '移除“:title”？它将从列表中消失，已下载的文件也会从服务器上删除。如果只是想让它不再加载，请改用该行的开关。',
         'import_ini_heading' => '导入当前配置',
         'import_ini_description' => '读取服务器已在使用的模组并据此生成列表。已在列表中的内容将被保留。',

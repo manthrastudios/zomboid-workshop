@@ -16,6 +16,7 @@ use Livewire\Attributes\On;
 use Tevo\ZomboidWorkshop\Filament\Server\Pages\ZomboidWorkshopPage;
 use Tevo\ZomboidWorkshop\Services\ModListService;
 use Tevo\ZomboidWorkshop\Services\SteamWorkshopService;
+use Tevo\ZomboidWorkshop\Services\WorldModsService;
 
 /**
  * Base das três tabelas do fluxo (Buscar → Testar → No servidor).
@@ -32,6 +33,22 @@ abstract class BaseModsTable extends TableWidget
     protected static function t(string $key, array $replace = []): string
     {
         return trans('zomboid-workshop::strings.'.$key, $replace);
+    }
+
+    /**
+     * Mods desta linha que o mundo já tem dentro — o que faz desligar ou remover
+     * virar ato destrutivo ([WorldModsService]).
+     *
+     * ⚠️ Vazio **e** `null` significam coisas diferentes: `null` é "não deu pra
+     * ler o mundo". Nenhum dos dois autoriza a tela a dizer que remover é
+     * seguro.
+     *
+     * @param  array<string, mixed>  $record
+     * @return array<int, string>|null
+     */
+    protected function worldModsFor(array $record): ?array
+    {
+        return app(WorldModsService::class)->entryModsInWorld($this->server(), $record);
     }
 
     protected function server(): Server
@@ -373,8 +390,22 @@ abstract class BaseModsTable extends TableWidget
             ->color('danger')
             ->tooltip(static::t('row.remove'))
             ->requiresConfirmation()
-            ->modalHeading(static::t('modals.remove_heading'))
-            ->modalDescription(fn (array $record) => static::t('modals.remove_description', ['title' => $record['title']]))
+            ->modalIcon(fn (array $record) => $this->worldModsFor($record) ? 'tabler-alert-triangle' : null)
+            ->modalHeading(fn (array $record) => static::t(
+                $this->worldModsFor($record) ? 'modals.remove_heading_danger' : 'modals.remove_heading'
+            ))
+            ->modalDescription(function (array $record) {
+                $inWorld = $this->worldModsFor($record);
+
+                if ($inWorld) {
+                    return static::t('modals.remove_description_danger', [
+                        'title' => $record['title'],
+                        'mods' => implode(', ', $inWorld),
+                    ]);
+                }
+
+                return static::t('modals.remove_description', ['title' => $record['title']]);
+            })
             ->action(function (array $record) {
                 $data = $this->getData();
                 $index = $this->findIndex((string) $record['workshop_id']);
